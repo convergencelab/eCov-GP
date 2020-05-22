@@ -55,17 +55,21 @@ I think to start the trees will simply be a boolean expression. If true, vac, ot
 
 '''
 
-# Imports
+###########
+# Imports #
+###########
 import csv
+import datetime
 import itertools
 import math
-import networkx as nx
-import networkx.algorithms.community as comm
 import ndlib.models.ModelConfig as mc
 import ndlib.models.epidemics as ep
+import networkx as nx
+import networkx.algorithms.community as comm
 import numpy as np
 import operator
 import os
+import pickle
 import random
 
 from deap import algorithms
@@ -83,9 +87,10 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
 # GP System
 DATA_DIRECTORY = "./"
+RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 10
-GENERATIONS = 20
+POPULATION = 20
+GENERATIONS = 50
 CROSSOVER = 0.75
 MUTATION = 0.1
 
@@ -179,7 +184,7 @@ def get_avg_dist_between_nodes(model, nodes, proportion=1.0):
     # return the average
     return avg
 
-# SINGLE GRAPH MEASURE
+# SINGLE GRAPH MEASUREOUTPUT_DIRECTORY
 
 # current status of node
 def get_status(model, node):
@@ -570,6 +575,7 @@ for g in range(GENERATIONS):
 
     
 print('Ending Evolution')
+
 evaluate_population(population)
 record = mstats.compile(population)
 logbook.record(gen=GENERATIONS, **record)
@@ -582,12 +588,17 @@ logbook.chapters["size"].header = "min", "avg", "max"
 print(logbook)
 
 
-print(population[0])
-print(population[0].fitness)
+################
+# Save Results #
+################
+
+print('Saving Results')
+results = dict(population=population, logbook=logbook)
+pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
 
-
-
+# Will remove once I know the other files (eCov-results) works.
+'''
 ### Graphviz Section ###
 nodes, edges, labels = gp.graph(population[0])
 
@@ -607,4 +618,4 @@ nx.draw_networkx_edges(g, pos)
 nx.draw_networkx_labels(g, pos, labels)
 plt.show()
 
-
+'''
