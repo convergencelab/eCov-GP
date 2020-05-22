@@ -1,7 +1,21 @@
 '''
 Author:     James Hughes
 Date:       May 19, 2020
+
 Version:    0.1
+
+Change Log:
+    0.1: 
+        - Initial version.
+    
+    0.2:
+        - Remove the end visualization.
+        - Save final results to pickled file.
+        - Visualization and results interpretation will occur in separate script. 
+
+End Change Log
+
+
 
 A GP search for effective vaccination strategies for a given graph
 
