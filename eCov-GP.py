@@ -89,7 +89,7 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 20
+POPULATION = 50
 GENERATIONS = 50
 CROSSOVER = 0.75
 MUTATION = 0.1
@@ -101,11 +101,11 @@ BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
 ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
 INFECTED_0 = 0.01
-GRAPH_SIZE = 250
-EDGE_p = 0.08
+GRAPH_SIZE = 500
+EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 6
+MITIGATIONS_PER_MEASURE = 20
 ###########
 
 
@@ -597,25 +597,3 @@ results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
 
-# Will remove once I know the other files (eCov-results) works.
-'''
-### Graphviz Section ###
-nodes, edges, labels = gp.graph(population[0])
-
-
-os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
-import matplotlib.pyplot as plt
-import networkx as nx
-from networkx.drawing.nx_agraph import graphviz_layout
-
-g = nx.Graph()
-g.add_nodes_from(nodes)
-g.add_edges_from(edges)
-pos = graphviz_layout(g, prog="dot")
-
-nx.draw_networkx_nodes(g, pos)
-nx.draw_networkx_edges(g, pos)
-nx.draw_networkx_labels(g, pos, labels)
-plt.show()
-
-'''
