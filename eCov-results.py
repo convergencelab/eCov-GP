@@ -50,8 +50,8 @@ from networkx.drawing.nx_agraph import graphviz_layout
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "25_50_250_140_10"
-RESULTS_NAME = "05-23-2020_08-35-19.pkl"
+SUB_DIRECTORY = "good/25_50_500_140_20"
+RESULTS_NAME = "05-26-2020_03-14-31.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -223,7 +223,7 @@ def evaluate_individual(chromosome):
     for i in range(ITERATIONS):
 
         # If it is a day we evaluate our network and apply mitigation
-        if i % MEASURE_EVERY == 0:
+        if i != 0 and  i % MEASURE_EVERY == 0:
             # Identify those that are able to hav emitigation applied
             # Remember, we pretend we do not know that exposed are exposed
             susceptible = get_all_of_status(model)
@@ -460,6 +460,9 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 draw_tree(population[0])
 
 
+for i in range(len(population)): 
+    print(i, population[i].fitness)
+    draw_tree(population[i])
 
 ##################
 # Epidemic Setup #
@@ -498,5 +501,5 @@ def diffusion_trend(ind):
     viz.plot()
 
 
-diffusion_trend(population[0])
+#diffusion_trend(population[41])
 

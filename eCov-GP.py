@@ -71,6 +71,7 @@ import operator
 import os
 import pickle
 import random
+import sys
 
 from deap import algorithms
 from deap import base
@@ -89,8 +90,8 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 50
-GENERATIONS = 50
+POPULATION = 5
+GENERATIONS = 10
 CROSSOVER = 0.75
 MUTATION = 0.1
 
@@ -101,9 +102,9 @@ BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
 ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
 INFECTED_0 = 0.01
-GRAPH_SIZE = 500
-EDGE_p = 0.04
-ITERATIONS = 140        
+GRAPH_SIZE = 250
+EDGE_p = 0.08
+ITERATIONS = 20        
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
 ###########
@@ -393,7 +394,7 @@ def evaluate_individual(chromosome):
     for i in range(ITERATIONS):
 
         # If it is a day we evaluate our network and apply mitigation
-        if i % MEASURE_EVERY == 0:
+        if i != 0 and i % MEASURE_EVERY == 0:
             # Identify those that are able to hav emitigation applied
             # Remember, we pretend we do not know that exposed are exposed
             susceptible = get_all_of_status(model)
@@ -596,4 +597,5 @@ print('Saving Results')
 results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
+sys.exit()
 
