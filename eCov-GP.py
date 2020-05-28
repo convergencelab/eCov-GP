@@ -98,8 +98,8 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 55
-GENERATIONS = 50
+POPULATION = 5
+GENERATIONS = 10
 CROSSOVER = 0.75
 MUTATION = 0.1
 
@@ -577,9 +577,9 @@ def evaluate_population(pop):
     #for ind, fit in zip(invalid_ind, fitnesses):
     for ind, fit in zip(pop, fitnesses):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
-
-
-        ind.fitness.values = fit    
+        final_susceptible, max_infected, total_infected, final_removed = convert_iterations(fit[0])
+        total_mitigations, effective_mitigations, ineffective_mitigations
+        ind.fitness.values = (final_susceptible, total_mitigations, )
 
 
 #################################################
