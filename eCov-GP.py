@@ -98,8 +98,8 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 5
-GENERATIONS = 10
+POPULATION = 25
+GENERATIONS = 50
 CROSSOVER = 0.75
 MUTATION = 0.1
 

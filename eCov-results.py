@@ -55,8 +55,8 @@ from networkx.drawing.nx_agraph import graphviz_layout
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "good/25_50_500_140_20"
-RESULTS_NAME = "05-26-2020_03-14-31.pkl"
+SUB_DIRECTORY = ""
+RESULTS_NAME = "05-28-2020_16-42-08.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -539,7 +539,7 @@ def draw_tree(ind):
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
-#draw_tree(population[0])
+draw_tree(population[0])
 
 
 for i in range(len(population)): 
@@ -575,7 +575,7 @@ travelers = get_travelers(model)
 ########################
 
 def diffusion_trend(ind):
-    iterations = evaluate_individual(ind)
+    iterations, iterations_mitigations = evaluate_individual(ind)
     trends = model.build_trends(iterations)
     # Visualization
     viz = DiffusionTrend(model, trends)
@@ -585,5 +585,5 @@ def diffusion_trend(ind):
     return iterations, trends
 
 
-#diffusion_trend(population[41])
+diffusion_trend(population[0])
 
