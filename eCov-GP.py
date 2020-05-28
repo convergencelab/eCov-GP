@@ -489,7 +489,7 @@ def evaluate_individual(chromosome):
             mitigations_step['status_delta'][4] = mitigations_used_effective
             mitigations_step['total_mitigations']['total'] = mitigations_used
             mitigations_step['total_mitigations']['effective'] = mitigations_used_effective
-            mitigations_step['total_mitigations']['ineffected'] = mitigations_used - mitigations_used_effective
+            mitigations_step['total_mitigations']['ineffective'] = mitigations_used - mitigations_used_effective
 
             iterations_mitigations.append(mitigations_step)
 
@@ -517,6 +517,56 @@ def evaluate_individual(chromosome):
     #return final_num_susceptible,
     #return final_num_susceptible, total_mitigation
     return iterations, iterations_mitigations,
+
+def mitigation_trends(iterations_mitigations):
+    trends = [{'trends': {}}]
+
+    trends[0]['trends']['node_count'] = {'total':[], 'effective':[], 'ineffective':[]}
+    trends[0]['trends']['status_delta'] = {'total':[], 'effective':[], 'ineffective':[]}
+
+    running_total = 0
+    running_effective = 0
+    running_ineffective = 0
+
+    for iteration in iterations_mitigations:
+
+        current_total = iteration['total_mitigations']['total']
+        current_effective = iteration['total_mitigations']['effective']
+        current_ineffective = iteration['total_mitigations']['ineffective']
+
+        running_total += current_total
+        running_effective += current_effective
+        running_ineffective += current_ineffective
+        
+        trends[0]['trends']['node_count']['total'].append(running_total)
+        trends[0]['trends']['node_count']['effective'].append(running_effective)
+        trends[0]['trends']['node_count']['ineffective'].append(running_ineffective)
+
+        trends[0]['trends']['status_delta']['total'].append(current_total)
+        trends[0]['trends']['status_delta']['effective'].append(current_effective)
+        trends[0]['trends']['status_delta']['ineffective'].append(current_ineffective)
+    
+    return trends
+
+
+
+def convert_iterations(iterations):
+    trends = model.build_trends(iterations)
+    final_susceptible = iterations[-1]['node_count'][0]
+    final_removed = iterations[-1]['node_count'][3]
+    max_infected = max(trends[0]['trends']['node_count'][2])
+    total_infected = sum(trends[0]['trends']['node_count'][2])  # Area under curve 
+    return final_susceptible, max_infected, total_infected, final_removed, 
+
+def convert_iterations_mitigations(iterations_mitigations):
+    trends = mitigation_trends(iterations_mitigations)
+    total = trends[0]['trends']['node_count']['total'][-1]
+    effective = trends[0]['trends']['node_count']['effective'][-1]
+    ineffective = trends[0]['trends']['node_count']['ineffective'][-1]
+    
+    return total, effective, ineffective, 
+
+
 
 def evaluate_population(pop):
     # Only worry about individuals with INVALID fitness values
