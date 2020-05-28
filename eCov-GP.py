@@ -578,7 +578,7 @@ def evaluate_population(pop):
     for ind, fit in zip(pop, fitnesses):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
         final_susceptible, max_infected, total_infected, final_removed = convert_iterations(fit[0])
-        total_mitigations, effective_mitigations, ineffective_mitigations
+        total_mitigations, effective_mitigations, ineffective_mitigations = convert_iterations_mitigations(fit[1])
         ind.fitness.values = (final_susceptible, total_mitigations, )
 
 
