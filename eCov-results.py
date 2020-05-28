@@ -209,21 +209,24 @@ def mitigate_neighbours(model, node, mitigation_available):
 # Fitness Evaluation #
 ######################
    
-# Fitness Function
 def evaluate_individual(chromosome):
     f = toolbox.compile(expr=chromosome)
 
     max_infected = 0
     total_infected = 0
     total_mitigation = 0
+    total_mitigation_effective = 0
 
-    # Simulation execution
+    # List to record network changes throughout simulation
     iterations = []
+    
+    # List to record network changes about mitigation strategies 
+    iterations_mitigations = []
 
     for i in range(ITERATIONS):
 
         # If it is a day we evaluate our network and apply mitigation
-        if i != 0 and  i % MEASURE_EVERY == 0:
+        if i != 0 and i % MEASURE_EVERY == 0:
             # Identify those that are able to hav emitigation applied
             # Remember, we pretend we do not know that exposed are exposed
             susceptible = get_all_of_status(model)
@@ -242,7 +245,15 @@ def evaluate_individual(chromosome):
 
             #print(max_infected, '\t', total_infected, '\t', num_recovered - total_mitigation, '\t', total_mitigation)
 
+            # Track mitigation details
             mitigations_used = 0
+            mitigations_used_effective = 0
+            mitigations_step = {}
+            mitigations_step['iteration'] = i
+            mitigations_step['status'] = {}
+            mitigations_step['node_count'] = {}
+            mitigations_step['status_delta'] = {}
+            mitigations_step['total_mitigations'] = {}
 
             # Evaluate nodes
             # Only consider susceptible and exposed currently
@@ -276,7 +287,10 @@ def evaluate_individual(chromosome):
                                         )
                     if do_we_mitigate:
                         if node_status == 0:
-                            mitigations_used += mitigate_self(model, s)
+                            cur_num_mitigated = mitigate_self(model, s)
+                            mitigations_used += cur_num_mitigated
+                            mitigations_used_effective += cur_num_mitigated
+                            mitigations_step['status'][s] = 4
 
                         # Apply mitigation to exposed, but this wastes mitigation                        
                         else:
@@ -286,17 +300,31 @@ def evaluate_individual(chromosome):
                     break
 
             total_mitigation += mitigations_used
+            total_mitigation_effective += mitigations_used_effective
 
-        
+            mitigations_step['node_count'][4] = total_mitigation_effective
+            mitigations_step['status_delta'][4] = mitigations_used_effective
+            mitigations_step['total_mitigations']['total'] = mitigations_used
+            mitigations_step['total_mitigations']['effective'] = mitigations_used_effective
+            mitigations_step['total_mitigations']['ineffected'] = mitigations_used - mitigations_used_effective
+
+            iterations_mitigations.append(mitigations_step)
 
         current_infected = get_num_nodes(model, target_status=2)
         total_infected += current_infected
         max_infected = max(max_infected, current_infected)
 
         iterations.append(model.iteration())
+        
 
     final_num_susceptible = get_num_nodes(model)    
     final_num_removed = get_num_nodes(model, target_status=3)
+
+    # Use this between chromosome evals
+    # Will reset network with same params
+    # BUT, the same nodes will NOT start infected
+    # Would this make more sense in evaluate_population?
+    model.reset()
 
     #print(max_infected, '\t', total_infected, '\t', final_num_removed - total_mitigation, '\t', total_mitigation)
     #print(final_num_removed, total_mitigation, final_num_removed - total_mitigation)
@@ -305,7 +333,7 @@ def evaluate_individual(chromosome):
     # Maybe I will incorporate vaccines in here somehow later
     #return final_num_susceptible,
     #return final_num_susceptible, total_mitigation
-    return iterations
+    return iterations, iterations_mitigations,
 
 ###############
 # DEAP Setup  #
@@ -457,12 +485,12 @@ def draw_tree(ind):
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
-draw_tree(population[0])
+#draw_tree(population[0])
 
 
 for i in range(len(population)): 
     print(i, population[i].fitness)
-    draw_tree(population[i])
+    #draw_tree(population[i])
 
 ##################
 # Epidemic Setup #
@@ -493,12 +521,14 @@ travelers = get_travelers(model)
 ########################
 
 def diffusion_trend(ind):
-    trends = model.build_trends(evaluate_individual(ind))
+    iterations = evaluate_individual(ind)
+    trends = model.build_trends(iterations)
     # Visualization
     viz = DiffusionTrend(model, trends)
     viz.plot()
     viz = DiffusionPrevalence(model, trends)
     viz.plot()
+    return iterations, trends
 
 
 #diffusion_trend(population[41])
