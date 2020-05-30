@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.3
+Version:    0.4
 
 Change Log:
     0.1 (May 19, 2020): 
@@ -19,6 +19,8 @@ Change Log:
         - Use the trends function from nblib to convert the iterations list into something usable
         - Create a trends like function to convert the iterations like thing for mitigations into something usable for the fitness values
 
+    0.4 (May 30, 2020):
+        - Add a boolean flag to allow unused mitigations to be used at next evaluation period
 
 
 End Change Log
@@ -114,7 +116,8 @@ GRAPH_SIZE = 500
 EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 20
+MITIGATIONS_PER_MEASURE = 30
+ROLLOVER = False
 ###########
 
 
@@ -685,6 +688,13 @@ print('Saving Results')
 results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
+# plot difftrend so it doesn't crash because of SCOOP
+iterations, iterations_mitigations = evaluate_individual(population[0])
+trends = model.build_trends(iterations)
+# Visualization
+viz = DiffusionTrend(model, trends)
+viz.plot()
+
 # Exit so the SCOOP doesn't try to run again and crash 
-sys.exit()
+#sys.exit()
 

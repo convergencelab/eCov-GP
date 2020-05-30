@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.3
+Version:    0.4
 
 Change Log:
     0.1: 
@@ -16,6 +16,9 @@ Change Log:
         - Update to the evaluate_individual function to return lists of dictionaries for node changes and mitigation changes
         - Mitigation trends function
         - Functions to convert trends and iterations to simple summary numbers (more useful for GP itself)
+
+    0.4 (May 30, 2020):
+        - Add a boolean flag to allow unused mitigations to be used at next evaluation period
 
 
 End Change Log
@@ -56,7 +59,7 @@ from networkx.drawing.nx_agraph import graphviz_layout
 
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = ""
-RESULTS_NAME = "05-28-2020_16-42-08.pkl"
+RESULTS_NAME = "05-29-2020_23-52-11.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -69,7 +72,7 @@ GRAPH_SIZE = 500
 EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 20
+MITIGATIONS_PER_MEASURE = 30
 
 ###########################
 # Graph Measure Functions #
@@ -585,5 +588,5 @@ def diffusion_trend(ind):
     return iterations, trends
 
 
-diffusion_trend(population[0])
+#diffusion_trend(population[0])
 
