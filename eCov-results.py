@@ -73,6 +73,7 @@ EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 30
+ROLLOVER = True
 
 ###########################
 # Graph Measure Functions #
@@ -217,6 +218,7 @@ def mitigate_neighbours(model, node, mitigation_available):
 # Fitness Evaluation #
 ######################
    
+# Fitness Function
 def evaluate_individual(chromosome):
     f = toolbox.compile(expr=chromosome)
 
@@ -224,6 +226,8 @@ def evaluate_individual(chromosome):
     total_infected = 0
     total_mitigation = 0
     total_mitigation_effective = 0
+    rollover_mitigations = 0
+    
 
     # List to record network changes throughout simulation
     iterations = []
@@ -268,7 +272,7 @@ def evaluate_individual(chromosome):
             # In future, we could consider infected and do neighbour/ring mitigation
             for s in susexp:
                 
-                if mitigations_available(MITIGATIONS_PER_MEASURE, mitigations_used):
+                if mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used):
                     node_status = get_status(model, s)
                     node_degree = get_degree(model, s)
                     avg_neighbour_degree = get_avg_neighbour_degree(model, s)
@@ -276,8 +280,8 @@ def evaluate_individual(chromosome):
                     neighbour_infected = get_num_neighbour_status(model, s, target_status=2) 
                     neighbour_removed = get_num_neighbour_status(model, s, target_status=3) 
                     traveler = is_traveler(travelers, s)
-                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE, mitigations_used)
-                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE, mitigations_used)
+                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
+                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
 
                     do_we_mitigate = f(
                                         node_degree,
@@ -306,6 +310,11 @@ def evaluate_individual(chromosome):
                        
                 else:
                     break
+
+            # If we are rolloigover
+            if ROLLOVER:
+                # rollovers can accumulate over multiple periods
+                rollover_mitigations = (MITIGATIONS_PER_MEASURE + rollover_mitigations) - mitigations_used
 
             total_mitigation += mitigations_used
             total_mitigation_effective += mitigations_used_effective
