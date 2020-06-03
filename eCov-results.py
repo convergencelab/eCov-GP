@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.3
+Version:    0.4
 
 Change Log:
     0.1: 
@@ -16,6 +16,9 @@ Change Log:
         - Update to the evaluate_individual function to return lists of dictionaries for node changes and mitigation changes
         - Mitigation trends function
         - Functions to convert trends and iterations to simple summary numbers (more useful for GP itself)
+
+    0.4 (June 3, 2020):
+        - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
 
 
 End Change Log
@@ -215,7 +218,11 @@ def mitigate_neighbours(model, node, mitigation_available):
 ######################
    
 def evaluate_individual(chromosome):
-    f = toolbox.compile(expr=chromosome)
+
+    if type(chromosome) == creator.Individual:
+        f = toolbox.compile(expr=chromosome)
+    else:
+        f = chromosome
 
     max_infected = 0
     total_infected = 0

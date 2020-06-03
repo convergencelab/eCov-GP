@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.3
+Version:    0.4ss
 
 Change Log:
     0.1 (May 19, 2020): 
@@ -19,7 +19,8 @@ Change Log:
         - Use the trends function from nblib to convert the iterations list into something usable
         - Create a trends like function to convert the iterations like thing for mitigations into something usable for the fitness values
 
-
+    0.4 (June 3, 2020):
+        - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
 
 End Change Log
 
@@ -393,7 +394,11 @@ travelers = get_travelers(model)
    
 # Fitness Function
 def evaluate_individual(chromosome):
-    f = toolbox.compile(expr=chromosome)
+
+    if type(chromosome) == creator.Individual:
+        f = toolbox.compile(expr=chromosome)
+    else:
+        f = chromosome
 
     max_infected = 0
     total_infected = 0
