@@ -58,8 +58,8 @@ from networkx.drawing.nx_agraph import graphviz_layout
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = ""
-RESULTS_NAME = "05-29-2020_23-52-11.pkl"
+SUB_DIRECTORY = "good/25_50_500_140_20_roll"
+RESULTS_NAME = "05-31-2020_08-48-20.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -72,7 +72,7 @@ GRAPH_SIZE = 500
 EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 30
+MITIGATIONS_PER_MEASURE = 20
 ROLLOVER = True
 
 ###########################
