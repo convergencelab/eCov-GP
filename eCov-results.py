@@ -17,8 +17,13 @@ Change Log:
         - Mitigation trends function
         - Functions to convert trends and iterations to simple summary numbers (more useful for GP itself)
 
+<<<<<<< HEAD
     0.4 (June 3, 2020):
         - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
+=======
+    0.4 (May 30, 2020):
+        - Add a boolean flag to allow unused mitigations to be used at next evaluation period
+>>>>>>> rollover
 
 
 End Change Log
@@ -58,8 +63,8 @@ from networkx.drawing.nx_agraph import graphviz_layout
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = ""
-RESULTS_NAME = "05-28-2020_16-42-08.pkl"
+SUB_DIRECTORY = "good/25_50_500_140_20_roll"
+RESULTS_NAME = "05-31-2020_08-48-20.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -73,6 +78,7 @@ EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
+ROLLOVER = True
 
 ###########################
 # Graph Measure Functions #
@@ -217,6 +223,7 @@ def mitigate_neighbours(model, node, mitigation_available):
 # Fitness Evaluation #
 ######################
    
+# Fitness Function
 def evaluate_individual(chromosome):
 
     if type(chromosome) == creator.Individual:
@@ -228,6 +235,8 @@ def evaluate_individual(chromosome):
     total_infected = 0
     total_mitigation = 0
     total_mitigation_effective = 0
+    rollover_mitigations = 0
+    
 
     # List to record network changes throughout simulation
     iterations = []
@@ -272,7 +281,7 @@ def evaluate_individual(chromosome):
             # In future, we could consider infected and do neighbour/ring mitigation
             for s in susexp:
                 
-                if mitigations_available(MITIGATIONS_PER_MEASURE, mitigations_used):
+                if mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used):
                     node_status = get_status(model, s)
                     node_degree = get_degree(model, s)
                     avg_neighbour_degree = get_avg_neighbour_degree(model, s)
@@ -280,8 +289,8 @@ def evaluate_individual(chromosome):
                     neighbour_infected = get_num_neighbour_status(model, s, target_status=2) 
                     neighbour_removed = get_num_neighbour_status(model, s, target_status=3) 
                     traveler = is_traveler(travelers, s)
-                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE, mitigations_used)
-                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE, mitigations_used)
+                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
+                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
 
                     do_we_mitigate = f(
                                         node_degree,
@@ -310,6 +319,11 @@ def evaluate_individual(chromosome):
                        
                 else:
                     break
+
+            # If we are rolloigover
+            if ROLLOVER:
+                # rollovers can accumulate over multiple periods
+                rollover_mitigations = (MITIGATIONS_PER_MEASURE + rollover_mitigations) - mitigations_used
 
             total_mitigation += mitigations_used
             total_mitigation_effective += mitigations_used_effective
@@ -592,5 +606,5 @@ def diffusion_trend(ind):
     return iterations, trends
 
 
-diffusion_trend(population[0])
+#diffusion_trend(population[0])
 

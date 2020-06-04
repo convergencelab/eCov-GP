@@ -2,7 +2,8 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.4
+Version:    0.5
+
 
 Change Log:
     0.1 (May 19, 2020): 
@@ -19,8 +20,12 @@ Change Log:
         - Use the trends function from nblib to convert the iterations list into something usable
         - Create a trends like function to convert the iterations like thing for mitigations into something usable for the fitness values
 
-    0.4 (June 3, 2020):
+    0.4 (May 30, 2020):
+        - Add a boolean flag to allow unused mitigations to be used at next evaluation period
+
+    0.5 (June 3, 2020):
         - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
+
 
 End Change Log
 
@@ -116,6 +121,7 @@ EDGE_p = 0.04
 ITERATIONS = 140        
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
+ROLLOVER = True
 ###########
 
 
@@ -404,6 +410,8 @@ def evaluate_individual(chromosome):
     total_infected = 0
     total_mitigation = 0
     total_mitigation_effective = 0
+    rollover_mitigations = 0
+    
 
     # List to record network changes throughout simulation
     iterations = []
@@ -448,7 +456,7 @@ def evaluate_individual(chromosome):
             # In future, we could consider infected and do neighbour/ring mitigation
             for s in susexp:
                 
-                if mitigations_available(MITIGATIONS_PER_MEASURE, mitigations_used):
+                if mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used):
                     node_status = get_status(model, s)
                     node_degree = get_degree(model, s)
                     avg_neighbour_degree = get_avg_neighbour_degree(model, s)
@@ -456,8 +464,8 @@ def evaluate_individual(chromosome):
                     neighbour_infected = get_num_neighbour_status(model, s, target_status=2) 
                     neighbour_removed = get_num_neighbour_status(model, s, target_status=3) 
                     traveler = is_traveler(travelers, s)
-                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE, mitigations_used)
-                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE, mitigations_used)
+                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
+                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
 
                     do_we_mitigate = f(
                                         node_degree,
@@ -486,6 +494,11 @@ def evaluate_individual(chromosome):
                        
                 else:
                     break
+
+            # If we are rolloigover
+            if ROLLOVER:
+                # rollovers can accumulate over multiple periods
+                rollover_mitigations = (MITIGATIONS_PER_MEASURE + rollover_mitigations) - mitigations_used
 
             total_mitigation += mitigations_used
             total_mitigation_effective += mitigations_used_effective
@@ -690,6 +703,13 @@ print('Saving Results')
 results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
+# plot difftrend so it doesn't crash because of SCOOP
+iterations, iterations_mitigations = evaluate_individual(population[0])
+trends = model.build_trends(iterations)
+# Visualization
+viz = DiffusionTrend(model, trends)
+viz.plot()
+
 # Exit so the SCOOP doesn't try to run again and crash 
-sys.exit()
+#sys.exit()
 
