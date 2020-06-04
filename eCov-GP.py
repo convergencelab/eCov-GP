@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.4
+Version:    0.5
 
 Change Log:
     0.1 (May 19, 2020): 
