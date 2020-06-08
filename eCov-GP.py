@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.6
+Version:    0.7
 
 
 Change Log:
@@ -29,6 +29,10 @@ Change Log:
     0.6 (June 8, 2020):
         - Evaluate Individual takes a function
         - Evaluate population now passes a compiled function to evaluate individual
+
+    0.7 (June 8, 2020):
+        - Split files into sub-files of logical units
+        - Files will be imported 
 
 
 End Change Log
@@ -100,6 +104,8 @@ from deap import gp
 from ndlib.viz.mpl.DiffusionTrend import DiffusionTrend
 from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
+from measures import * 
+
 ###########
 # PARAMS  #
 ###########
@@ -132,7 +138,7 @@ ROLLOVER = True
 ###########################
 # Graph Measure Functions #
 ###########################
-
+'''
 # STATIC MEASURES #
 
 # Find nodes that connect communities
@@ -229,7 +235,7 @@ def get_num_neighbour_status(model, node, target_status=0):
         if model.status[neighbour] == target_status:
             status_count += 1
     return status_count
-
+'''
 
 
 ###########################
