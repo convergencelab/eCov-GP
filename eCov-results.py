@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.6
+Version:    0.7
 
 Change Log:
     0.1: 
@@ -26,6 +26,10 @@ Change Log:
     0.6 (June 8, 2020):
         - Evaluate Individual takes a function
         - Evaluate population now passes a compiled function to evaluate individual
+
+    0.7 (June 8, 2020):
+        - Split files into sub-files of logical units
+        - Files will be imported 
 
 End Change Log
 
@@ -58,6 +62,8 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
 from networkx.drawing.nx_agraph import graphviz_layout
 
+from measures import * 
+from language import *
 
 ###########
 # PARAMS  #
@@ -80,7 +86,7 @@ ITERATIONS = 140
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
 ROLLOVER = True
-
+'''
 ###########################
 # Graph Measure Functions #
 ###########################
@@ -182,6 +188,8 @@ def get_num_neighbour_status(model, node, target_status=0):
             status_count += 1
     return status_count
 
+'''
+'''
 ###########################
 # Mitigation Applications #
 ###########################
@@ -219,6 +227,7 @@ def mitigate_neighbours(model, node, mitigation_available):
 
     return mitigation_count
 
+'''
 
 ######################
 # Fitness Evaluation #
@@ -407,6 +416,7 @@ def convert_iterations_mitigations(iterations_mitigations):
     return total, effective, ineffective, 
 
 
+'''
 ###############
 # DEAP Setup  #
 ###############
@@ -489,6 +499,8 @@ language.addPrimitive(if_then_else, [bool, bool, bool], bool)
 language.addEphemeralConstant("rand_int", lambda: random.randint(0,15), float)
 language.addTerminal(False, bool)
 language.addTerminal(True, bool)
+'''
+
 
 toolbox = base.Toolbox()
 

@@ -105,6 +105,7 @@ from ndlib.viz.mpl.DiffusionTrend import DiffusionTrend
 from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
 from measures import * 
+from language import *
 
 ###########
 # PARAMS  #
@@ -237,7 +238,7 @@ def get_num_neighbour_status(model, node, target_status=0):
     return status_count
 '''
 
-
+'''
 ###########################
 # Mitigation Applications #
 ###########################
@@ -328,25 +329,6 @@ language.renameArguments(ARG4='NUM_INFECT')
 #language.renameArguments(ARG14='AVG_REMOVE')
 #language.renameArguments(ARG15='ITERATION')
 
-'''
-language.renameArguments(
-                        #ARG0='STATUS',
-                         ARG0='DEGREE',
-                         #ARG2='NB_DEGREE',
-                         ARG1='NB_SUSEXP',
-                         ARG2='NB_INFECT',
-                         ARG3='NB_REMOVE',
-                         ARG4='TRAVELER',
-                         ARG5='#MITIGAT',
-                         ARG6='MITIGATE',
-                         ARG7='#SUSEXP',
-                         ARG8='#INFECT',
-                         ARG9='#REMOVE',
-                         #ARG12='AVG_SUSEXP',
-                         #ARG13='AVG_INFECT',
-                         #ARG14='AVG_REMOVE',
-                        )
-'''
 
 
 # Arithmatic 
@@ -378,7 +360,7 @@ language.addTerminal(False, bool)
 language.addTerminal(True, bool)
 
 
-
+'''
 ##################
 # Epidemic Setup #
 ##################
