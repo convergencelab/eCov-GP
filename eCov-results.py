@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.4
+Version:    0.5
 
 Change Log:
     0.1: 
@@ -17,14 +17,11 @@ Change Log:
         - Mitigation trends function
         - Functions to convert trends and iterations to simple summary numbers (more useful for GP itself)
 
-<<<<<<< HEAD
-    0.4 (June 3, 2020):
-        - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
-=======
     0.4 (May 30, 2020):
         - Add a boolean flag to allow unused mitigations to be used at next evaluation period
->>>>>>> rollover
 
+    0.5 (June 3, 2020):
+        - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
 
 End Change Log
 
