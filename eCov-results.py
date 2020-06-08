@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.5
+Version:    0.6
 
 Change Log:
     0.1: 
@@ -22,6 +22,10 @@ Change Log:
 
     0.5 (June 3, 2020):
         - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
+
+    0.6 (June 8, 2020):
+        - Evaluate Individual takes a function
+        - Evaluate population now passes a compiled function to evaluate individual
 
 End Change Log
 
@@ -221,12 +225,8 @@ def mitigate_neighbours(model, node, mitigation_available):
 ######################
    
 # Fitness Function
-def evaluate_individual(chromosome):
+def evaluate_individual(f):
 
-    if type(chromosome) == creator.Individual:
-        f = toolbox.compile(expr=chromosome)
-    else:
-        f = chromosome
 
     max_infected = 0
     total_infected = 0
@@ -593,7 +593,7 @@ travelers = get_travelers(model)
 ########################
 
 def diffusion_trend(ind):
-    iterations, iterations_mitigations = evaluate_individual(ind)
+    iterations, iterations_mitigations = evaluate_individual(toolbox.compile(ind))
     trends = model.build_trends(iterations)
     # Visualization
     viz = DiffusionTrend(model, trends)

@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.5
+Version:    0.6
 
 
 Change Log:
@@ -25,6 +25,10 @@ Change Log:
 
     0.5 (June 3, 2020):
         - Evaluate Individual can take a chromosome that needs to be compiled, or an individual function. 
+
+    0.6 (June 8, 2020):
+        - Evaluate Individual takes a function
+        - Evaluate population now passes a compiled function to evaluate individual
 
 
 End Change Log
@@ -399,12 +403,7 @@ travelers = get_travelers(model)
 ######################
    
 # Fitness Function
-def evaluate_individual(chromosome):
-
-    if type(chromosome) == creator.Individual:
-        f = toolbox.compile(expr=chromosome)
-    else:
-        f = chromosome
+def evaluate_individual(f):
 
     max_infected = 0
     total_infected = 0
@@ -591,7 +590,8 @@ def evaluate_population(pop):
     # This will save some time
     #invalid_ind = [ind for ind in pop if not ind.fitness.valid]
     #fitnesses = list(map(toolbox.evaluate, invalid_ind))
-    fitnesses = list(map(toolbox.evaluate, pop))
+    compiled_pop = list(map(toolbox.compile, pop))
+    fitnesses = list(map(toolbox.evaluate, compiled_pop))
     #for ind, fit in zip(invalid_ind, fitnesses):
     for ind, fit in zip(pop, fitnesses):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
