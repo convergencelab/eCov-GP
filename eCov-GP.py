@@ -106,6 +106,7 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
 from measures import * 
 from language import *
+from evaluate import *
 
 ###########
 # PARAMS  #
@@ -385,13 +386,13 @@ model.set_initial_status(cfg)
 # Identify travelers
 travelers = get_travelers(model)
 
-
+'''
 ######################
 # Fitness Evaluation #
 ######################
    
 # Fitness Function
-def evaluate_individual(f):
+def evaluate_individual(f, m, total_iterations, measure_every, mitigations_per_measure, rollover):
 
     max_infected = 0
     total_infected = 0
@@ -406,25 +407,25 @@ def evaluate_individual(f):
     # List to record network changes about mitigation strategies 
     iterations_mitigations = []
 
-    for i in range(ITERATIONS):
+    for i in range(total_iterations):
 
         # If it is a day we evaluate our network and apply mitigation
-        if i != 0 and i % MEASURE_EVERY == 0:
+        if i != 0 and i % measure_every == 0:
             # Identify those that are able to hav emitigation applied
             # Remember, we pretend we do not know that exposed are exposed
-            susceptible = get_all_of_status(model)
-            exposed = get_all_of_status(model, target_status=1)
-            #infected = get_all_of_status(model, target_status=2)
+            susceptible = get_all_of_status(m)
+            exposed = get_all_of_status(m, target_status=1)
+            #infected = get_all_of_status(m, target_status=2)
             susexp = susceptible + exposed
             # Shuffle because we have limited resources and don't want any ordering
             random.shuffle(susexp)          
 
             
-            num_suscept = get_num_nodes(model)
-            num_exposed = get_num_nodes(model, target_status=1)
+            num_suscept = get_num_nodes(m)
+            num_exposed = get_num_nodes(m, target_status=1)
             num_susexp = num_suscept + num_exposed
-            num_infected = get_num_nodes(model, target_status=2)
-            num_removed = get_num_nodes(model, target_status=3)
+            num_infected = get_num_nodes(m, target_status=2)
+            num_removed = get_num_nodes(m, target_status=3)
 
             #print(max_infected, '\t', total_infected, '\t', num_recovered - total_mitigation, '\t', total_mitigation)
 
@@ -443,16 +444,16 @@ def evaluate_individual(f):
             # In future, we could consider infected and do neighbour/ring mitigation
             for s in susexp:
                 
-                if mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used):
-                    node_status = get_status(model, s)
-                    node_degree = get_degree(model, s)
-                    avg_neighbour_degree = get_avg_neighbour_degree(model, s)
-                    neighbour_susexp = get_num_neighbour_status(model, s, target_status=0) + get_num_neighbour_status(model, s, target_status=1)
-                    neighbour_infected = get_num_neighbour_status(model, s, target_status=2) 
-                    neighbour_removed = get_num_neighbour_status(model, s, target_status=3) 
+                if mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used):
+                    node_status = get_status(m, s)
+                    node_degree = get_degree(m, s)
+                    avg_neighbour_degree = get_avg_neighbour_degree(m, s)
+                    neighbour_susexp = get_num_neighbour_status(m, s, target_status=0) + get_num_neighbour_status(m, s, target_status=1)
+                    neighbour_infected = get_num_neighbour_status(m, s, target_status=2) 
+                    neighbour_removed = get_num_neighbour_status(m, s, target_status=3) 
                     traveler = is_traveler(travelers, s)
-                    num_mitigation = mitigations_available(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
-                    mitigation = get_cur_mitigations(MITIGATIONS_PER_MEASURE + rollover_mitigations, mitigations_used)
+                    num_mitigation = mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used)
+                    mitigation = get_cur_mitigations(mitigations_per_measure + rollover_mitigations, mitigations_used)
 
                     do_we_mitigate = f(
                                         node_degree,
@@ -470,7 +471,7 @@ def evaluate_individual(f):
                                         )
                     if do_we_mitigate:
                         if node_status == 0:
-                            cur_num_mitigated = mitigate_self(model, s)
+                            cur_num_mitigated = mitigate_self(m, s)
                             mitigations_used += cur_num_mitigated
                             mitigations_used_effective += cur_num_mitigated
                             mitigations_step['status'][s] = 4
@@ -483,9 +484,9 @@ def evaluate_individual(f):
                     break
 
             # If we are rolloigover
-            if ROLLOVER:
+            if rollover:
                 # rollovers can accumulate over multiple periods
-                rollover_mitigations = (MITIGATIONS_PER_MEASURE + rollover_mitigations) - mitigations_used
+                rollover_mitigations = (mitigations_per_measure + rollover_mitigations) - mitigations_used
 
             total_mitigation += mitigations_used
             total_mitigation_effective += mitigations_used_effective
@@ -498,21 +499,21 @@ def evaluate_individual(f):
 
             iterations_mitigations.append(mitigations_step)
 
-        current_infected = get_num_nodes(model, target_status=2)
+        current_infected = get_num_nodes(m, target_status=2)
         total_infected += current_infected
         max_infected = max(max_infected, current_infected)
 
-        iterations.append(model.iteration())
+        iterations.append(m.iteration())
         
 
-    final_num_susceptible = get_num_nodes(model)    
-    final_num_removed = get_num_nodes(model, target_status=3)
+    final_num_susceptible = get_num_nodes(m)    
+    final_num_removed = get_num_nodes(m, target_status=3)
 
     # Use this between chromosome evals
     # Will reset network with same params
     # BUT, the same nodes will NOT start infected
     # Would this make more sense in evaluate_population?
-    model.reset()
+    m.reset()
 
     #print(max_infected, '\t', total_infected, '\t', final_num_removed - total_mitigation, '\t', total_mitigation)
     #print(final_num_removed, total_mitigation, final_num_removed - total_mitigation)
@@ -571,7 +572,7 @@ def convert_iterations_mitigations(iterations_mitigations):
     
     return total, effective, ineffective, 
 
-
+'''
 
 def evaluate_population(pop):
     # Only worry about individuals with INVALID fitness values
@@ -609,7 +610,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("compile", gp.compile, pset=language)
 
 # Operators
-toolbox.register("evaluate", evaluate_individual)
+toolbox.register("evaluate", evaluate_individual, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 toolbox.register("elitism", tools.selBest, k=1)
 toolbox.register("select", tools.selTournament, tournsize=2)
 toolbox.register("mate", gp.cxOnePoint)
