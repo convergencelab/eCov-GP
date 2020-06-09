@@ -6,7 +6,7 @@ Version:    0.1
 
 
 Change Log:
-    0.1 (May 19, 2020): 
+    0.1 (June 8, 2020): 
         - Initial version.
         - Remove the use of global variabls
 

@@ -106,7 +106,10 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
 from measures import * 
 from language import *
-from evaluate import *
+
+import evaluate
+import sgp
+import snetwork
 
 ###########
 # PARAMS  #
@@ -137,31 +140,8 @@ ROLLOVER = True
 ###########
 
 
-##################
-# Epidemic Setup #
-##################
-
-# Network topology
-#g = nx.erdos_renyi_graph(4000, 0.005)
-g = nx.erdos_renyi_graph(GRAPH_SIZE, EDGE_p)
-#g = nx.read_adjlist(os.path.join(GRAPH_DIRECTORY, GRAPH_NAME), delimiter='\t', nodetype=int)
-
-
-# Model selection
-model = ep.SEIRModel(g)
-
-# Model Configuration
-cfg = mc.Configuration()
-cfg.add_model_parameter('beta', BETA)
-cfg.add_model_parameter('gamma', GAMMA)
-cfg.add_model_parameter('alpha', ALPHA)
-cfg.add_model_parameter("fraction_infected", INFECTED_0)
-model.set_initial_status(cfg)
-
-# Identify travelers
-travelers = get_travelers(model)
-
-
+# How to evaluate the whole population 
+# Calls stuff from evaluate 
 def evaluate_population(pop):
     # Only worry about individuals with INVALID fitness values
     # This will save some time
@@ -172,57 +152,28 @@ def evaluate_population(pop):
     #for ind, fit in zip(invalid_ind, fitnesses):
     for ind, fit in zip(pop, fitnesses):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
-        final_susceptible, max_infected, total_infected, final_removed = convert_iterations(fit[0], model)
-        total_mitigations, effective_mitigations, ineffective_mitigations = convert_iterations_mitigations(fit[1])
+        final_susceptible, max_infected, total_infected, final_removed = evaluate.convert_iterations(fit[0], model)
+        total_mitigations, effective_mitigations, ineffective_mitigations = evaluate.convert_iterations_mitigations(fit[1])
         ind.fitness.values = (final_susceptible, total_mitigations, )
 
 
-#################################################
-# Set up chromosomes, population, and operators #
-#################################################
-toolbox = base.Toolbox()
 
-# Magic code to make it parallel?
-# Must be run like this though:
-#   ipython -m scoop eCov-GP.py
-from scoop import futures
-toolbox.register("map", futures.map)
+##################
+# Epidemic Setup #
+##################
+
+model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 
-creator.create("FitnessMin", base.Fitness, weights=(1,-1))
-creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
+# Identify travelers
+travelers = get_travelers(model)
 
-toolbox.register("expr", gp.genHalfAndHalf, pset=language, min_=1, max_=4)
-toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("compile", gp.compile, pset=language)
 
-# Operators
-toolbox.register("evaluate", evaluate_individual, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
-toolbox.register("elitism", tools.selBest, k=1)
-toolbox.register("select", tools.selTournament, tournsize=2)
-toolbox.register("mate", gp.cxOnePoint)
-toolbox.register("expr_mut", gp.genFull, min_=0, max_=2)
-toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=language)
+############
+# GP Setup #
+############
 
-## Bloat rules 
-toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
-toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
-
-toolbox.decorate("mate", gp.staticLimit(key=len, max_value=32))
-toolbox.decorate("mutate", gp.staticLimit(key=len, max_value=32))
-
-# Statistics Bookkeeeping
-stats_fit = tools.Statistics(lambda ind: ind.fitness.values)
-stats_size = tools.Statistics(len)
-mstats = tools.MultiStatistics(fitness=stats_fit, size=stats_size)
-mstats.register("avg", np.mean)
-mstats.register("std", np.std)
-mstats.register("min", np.min)
-mstats.register("max", np.max)
-
-logbook = tools.Logbook()
-
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 
 
 #######################
