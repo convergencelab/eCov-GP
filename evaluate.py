@@ -213,8 +213,8 @@ def mitigation_trends(iterations_mitigations):
 
 
 
-def convert_iterations(iterations):
-    trends = model.build_trends(iterations)
+def convert_iterations(iterations, m):
+    trends = m.build_trends(iterations)
     final_susceptible = iterations[-1]['node_count'][0]
     final_removed = iterations[-1]['node_count'][3]
     max_infected = max(trends[0]['trends']['node_count'][2])
