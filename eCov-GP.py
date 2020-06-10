@@ -232,7 +232,7 @@ results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
 # plot difftrend so it doesn't crash because of SCOOP
-iterations, iterations_mitigations = evaluate_individual(population[0])
+iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(population[0]), m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 trends = model.build_trends(iterations)
 # Visualization
 viz = DiffusionTrend(model, trends)
