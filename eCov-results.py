@@ -75,8 +75,8 @@ import snetwork
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "good/25_50_500_140_20_roll"
-RESULTS_NAME = "05-31-2020_08-48-20.pkl"
+SUB_DIRECTORY = "good/25_50_500_140_20/"
+RESULTS_NAME = "05-26-2020_03-14-31.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
