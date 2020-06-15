@@ -11,23 +11,17 @@ Change Log:
     
 End Change Log
 
-Generate a collection of results for a given function. This will be used to generate statistics to really evaluate the strategy effectivness
+Generate a collection of results for a given function. This will be used to generate statistics to really evaluate the strategy effectivness.
 
 '''
 
 ###########
 # Imports #
 ###########
-import ndlib.models.ModelConfig as mc
-import ndlib.models.epidemics as ep
-import networkx as nx
-import networkx.algorithms.community as comm
-import numpy as np
+
 import os
 import pickle
 
-from ndlib.viz.mpl.DiffusionTrend import DiffusionTrend
-from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 
 from measures import * 
 
@@ -57,20 +51,18 @@ ROLLOVER = True
 # Testing Params
 OUTPUT_DIRECTORY = "./function_tests/"
 N = 100
-CHANGE_TOPOLOGY = False
-FUNCTION = strategies.mitigation_none
+CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
+FUNCTION = strategies.mitigation_F1       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 ###########
-
-
-
 
 
 #############
 # Run Tests #
 #############
 
-print('Beginning Testing')
+print("Function Being Tested:\t", FUNCTION.__name__)
+print("Dynamic Graph Topology:\t", CHANGE_TOPOLOGY)
 
 all_iterations = []
 all_iterations_mitigations = []
@@ -78,6 +70,8 @@ all_iterations_mitigations = []
 all_trends = []
 all_trends_mitigations = []
 
+
+print('Beginning Testing')
 
 for i in range(N):
 
@@ -87,6 +81,8 @@ for i in range(N):
 
     # If this is the first run OR we want to change the topology all the time
     if i == 0 or CHANGE_TOPOLOGY:
+    
+        #print("\tMaking New Graph")
         model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
         # Identify travelers
@@ -112,7 +108,7 @@ for i in range(N):
 
 print('Saving Results')
 
-pickle.dump((all_iterations, all_iterations_mitigations), open(os.path.join(OUTPUT_DIRECTORY, FUNCTION.__name__ + '.pkl'),'wb'))
+pickle.dump((all_iterations, all_iterations_mitigations), open(os.path.join(OUTPUT_DIRECTORY, FUNCTION.__name__ + '_' + str(CHANGE_TOPOLOGY) +'.pkl'),'wb'))
 
 
 
