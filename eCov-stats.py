@@ -161,10 +161,8 @@ def compare_distros(d1, d2, f1_name, f2_name, metric):
     plt.hist(d2, color='r', alpha=0.75, label=f2_name)
     plt.axvline(np.median(d2), color='r', label=f2_name + ' Median')
     
-
     plt.legend()
     plt.show()
-
 
     return pVal
 
@@ -172,8 +170,20 @@ def compare_distros(d1, d2, f1_name, f2_name, metric):
 
 
 # Generate average epidemic curve plot
-def average_epidemic_plot(results, m):
-    pass
+def average_epidemic_plot(results, fName):
+
+    plt.bar(range(7, 140, 7), results['total'], width=7, align='edge', color='m', alpha=0.2, label='Total Mitigations')
+    plt.bar(range(7, 140, 7), results['effective'], width=7, align='edge', color='m', alpha=0.4, label='Effective Mitigations')
+    plt.bar(np.arange(7, 140, 7), results['ineffective'], width=7, align='edge', color='m', alpha=0.6, label='Ineffective Mitigations')
+    plt.plot(results[0], label='Susceptible')
+    plt.plot(results[1], label='Exposed')
+    plt.plot(results[2], label='Infected')
+    plt.plot(results[3], label='Removed')
+    plt.title(fName)
+    plt.ylabel('Count')
+    plt.xlabel('Days')
+    plt.legend(loc=1, fontsize=8)
+    plt.show()
 
 
 
@@ -192,21 +202,23 @@ compare_distros(m['mitigation'], n['mitigation'], 'f1','rando','Mitigations')
 i, m = get_all_trends(f1, model)
 a = get_average_trends(i, m)
 
-plt.plot(a[0])
-plt.plot(a[1])
-plt.plot(a[2])
-plt.plot(a[3])
-plt.plot(range(7, 140, 7), a['total'])
+average_epidemic_plot(a, 'F1')
+
+'''
+plt.bar(range(7, 140, 7), a['total'], width=7, align='edge', color='m', alpha=0.2, label='Total Mitigations')
+plt.bar(range(7, 140, 7), a['effective'], width=7, align='edge', color='m', alpha=0.4)#, label='Effective Mitigations')
+plt.bar(np.arange(7, 140, 7), a['ineffective'], width=7, align='edge', color='m', alpha=0.6)#, label='Ineffective Mitigations')
+plt.plot(a[0], label='Susceptible')
+plt.plot(a[1], label='Exposed')
+plt.plot(a[2], label='Infected')
+plt.plot(a[3], label='Removed')
+plt.legend()
 plt.show()
+'''
 
 i, m = get_all_trends(random, model)
 a = get_average_trends(i, m)
 
-plt.plot(a[0])
-plt.plot(a[1])
-plt.plot(a[2])
-plt.plot(a[3])
-plt.plot(range(7, 140, 7), a['total'])
-plt.show()
+average_epidemic_plot(a, 'Random')
 
 
