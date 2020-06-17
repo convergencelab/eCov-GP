@@ -2,12 +2,15 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.1
+Version:    0.2
 
 
 Change Log:
     0.1 (June 8, 2020): 
-        - Initial version.
+        - Initial version
+
+    0.2 (June 17, 2020):
+        - Added average degree static graph measure
     
 
 
@@ -61,6 +64,16 @@ def get_travelers(model):
                 all_travelers.add(t[1])
 
     return all_travelers
+
+# Get thje average degree of the graph
+def get_average_degree(model):
+    d = []
+
+    for n in range(len(model.graph.graph.nodes)):
+        d.append(model.graph.graph.degree(n))
+
+    return np.average(d)
+
 
 # WHOLE GRAPH MEASURES #
 

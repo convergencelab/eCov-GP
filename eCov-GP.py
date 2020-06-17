@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.7
+Version:    0.8
 
 
 Change Log:
@@ -33,6 +33,9 @@ Change Log:
     0.7 (June 8, 2020):
         - Split files into sub-files of logical units
         - Files will be imported 
+
+    0.2 (June 17, 2020):
+        - Small changes to system to allow for new measure
 
 
 End Change Log
@@ -167,13 +170,14 @@ model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta
 
 # Identify travelers
 travelers = get_travelers(model)
+average_degree = get_average_degree(model)
 
 
 ############
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 
 
 #######################

@@ -2,13 +2,17 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.1
+Version:    0.2
 
 
 Change Log:
     0.1 (June 8, 2020): 
         - Initial version.
         - Remove the use of global variabls
+
+    0.2 (June 17, 2020):
+        - Update to use new static measure of average graph degree
+
 
 End Change Log
 
@@ -49,7 +53,7 @@ from language import *
 ######################
    
 # Fitness Function
-def evaluate_individual(f, m, traveler_set, total_iterations, measure_every, mitigations_per_measure, rollover):
+def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measure_every, mitigations_per_measure, rollover):
 
     max_infected = 0
     total_infected = 0
@@ -119,6 +123,7 @@ def evaluate_individual(f, m, traveler_set, total_iterations, measure_every, mit
                                         neighbour_infected,
                                         #neighbour_removed,
                                         traveler,
+                                        avg_degree,
                                         num_mitigation,
                                         #mitigation,
                                         #num_susexp,

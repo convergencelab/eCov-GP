@@ -2,13 +2,15 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.1
+Version:    0.2
 
 
 Change Log:
     0.1 (June 8, 2020): 
         - Initial version.
-    
+
+    0.2 (June 17, 2020):
+        - Updated to incorporate new measure of average degree
 
 
 End Change Log
@@ -98,6 +100,7 @@ language = gp.PrimitiveSetTyped("MAIN",
                                  float,       # Number of neighbours infected
                                  #float,       # Number of neighbours removed
                                  bool,      # Is traveler
+                                 float,     # Average degree of Nodes in Graph
                                  float,       # Number of mitigations available
                                  #bool,      # Is mitigation available
                                  #float,       # Total number of susceptible and exposed
@@ -118,35 +121,16 @@ language.renameArguments(ARG0='DEGREE')
 language.renameArguments(ARG1='NB_INFECT')
 #language.renameArguments(ARG4='NB_REMOVE')
 language.renameArguments(ARG2='TRAVELER')
-language.renameArguments(ARG3='NUM_MITIGAT')
+language.renameArguments(ARG3='AVG_DEGREE')
+language.renameArguments(ARG4='NUM_MITIGAT')
 #language.renameArguments(ARG7='MITIGATE')
 #language.renameArguments(ARG8='NUM_SUSEXP')
-language.renameArguments(ARG4='NUM_INFECT')
+language.renameArguments(ARG5='NUM_INFECT')
 #language.renameArguments(ARG10='NUM_REMOVE')
 #language.renameArguments(ARG12='AVG_SUSEXP')
 #language.renameArguments(ARG13='AVG_INFECT')
 #language.renameArguments(ARG14='AVG_REMOVE')
 #language.renameArguments(ARG15='ITERATION')
-
-'''
-language.renameArguments(
-                        #ARG0='STATUS',
-                         ARG0='DEGREE',
-                         #ARG2='NB_DEGREE',
-                         ARG1='NB_SUSEXP',
-                         ARG2='NB_INFECT',
-                         ARG3='NB_REMOVE',
-                         ARG4='TRAVELER',
-                         ARG5='#MITIGAT',
-                         ARG6='MITIGATE',
-                         ARG7='#SUSEXP',
-                         ARG8='#INFECT',
-                         ARG9='#REMOVE',
-                         #ARG12='AVG_SUSEXP',
-                         #ARG13='AVG_INFECT',
-                         #ARG14='AVG_REMOVE',
-                        )
-'''
 
 
 # Arithmatic 
@@ -173,7 +157,7 @@ language.addPrimitive(if_then_else, [bool, bool, bool], bool)
 #language.addEphemeralConstant("rand_float", lambda: random.random()*100, float)
 #language.addEphemeralConstant("rand100", lambda: random.random() * 100, float)
 #language.addEphemeralConstant("rand_bool", lambda: True if random.random() < 0.5 else False, bool)
-language.addEphemeralConstant("rand_int", lambda: random.randint(0,15), float)
+language.addEphemeralConstant("rand_int", lambda: random.randint(0,30), float)
 language.addTerminal(False, bool)
 language.addTerminal(True, bool)
 
