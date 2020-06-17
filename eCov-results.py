@@ -75,8 +75,8 @@ import snetwork
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "good/25_50_500_140_20/"
-RESULTS_NAME = "05-26-2020_03-14-31.pkl"
+SUB_DIRECTORY = "good/55_50_500_140_20/"
+RESULTS_NAME = "05-28-2020_03-46-40.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -139,7 +139,7 @@ def draw_tree(ind):
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
-draw_tree(population[0])
+#draw_tree(population[0])
 
 
 for i in range(len(population)): 
