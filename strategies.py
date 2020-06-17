@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 11, 2020
 
-Version:    0.2
+Version:    0.3
 
 
 Change Log:
@@ -15,6 +15,9 @@ Change Log:
         - Degree 5, 10 are more-or-less useless
         - Degree 15 is fine as some non-insignificant number of nodes had degree < 15        
         
+    0.3 (June 17, 2020):
+        - Added 4 more special functions found by GP (F2 -- f5)
+
         
 
 End Change Log
@@ -177,4 +180,64 @@ def mitigation_F1(node_degree,
                         ):
     return traveler or ((14 - neighbour_infected) < (node_degree - 8))
 
+def mitigation_F2(node_degree,
+                        #avg_neighbour_degree,
+                        #neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        num_mitigation,
+                        #mitigation,
+                        #num_susexp,
+                        num_infected,
+                        #num_removed,
+                        #i,
+                        ):
+    return node_degree > 10 and neighbour_infected > 3
+
+def mitigation_F3(node_degree,
+                        #avg_neighbour_degree,
+                        #neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        num_mitigation,
+                        #mitigation,
+                        #num_susexp,
+                        num_infected,
+                        #num_removed,
+                        #i,
+                        ):
+    return neighbour_infected > 1
+
+def mitigation_F4(node_degree,
+                        #avg_neighbour_degree,
+                        #neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        num_mitigation,
+                        #mitigation,
+                        #num_susexp,
+                        num_infected,
+                        #num_removed,
+                        #i,
+                        ):
+    return traveler and neighbour_infected > 5
+
+# This one is weird. but whatever
+def mitigation_F5(node_degree,
+                        #avg_neighbour_degree,
+                        #neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        num_mitigation,
+                        #mitigation,
+                        #num_susexp,
+                        num_infected,
+                        #num_removed,
+                        #i,
+                        ):
+    return num_mitigation < neighbour_infected
 

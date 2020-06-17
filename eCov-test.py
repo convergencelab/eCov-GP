@@ -52,7 +52,7 @@ ROLLOVER = True
 OUTPUT_DIRECTORY = "./function_tests/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
-FUNCTION = strategies.mitigation_degree25       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+FUNCTION = strategies.mitigation_F4       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 ###########
 

@@ -60,7 +60,8 @@ import snetwork
 
 RESULTS_DIRECTORY = "./function_tests/"
 MEASURE_EVERY = 7
-FUNCTIONS_STATIC = ['mitigation_none_False', 
+FUNCTIONS_STATIC = [
+            'mitigation_none_False', 
             #'mitigation_degree5_False', 
             #'mitigation_degree10_False', 
             'mitigation_degree15_False',
@@ -68,9 +69,15 @@ FUNCTIONS_STATIC = ['mitigation_none_False',
             'mitigation_degree25_False', 
             'mitigation_traveler_False',
             'mitigation_random_False',
-            'mitigation_F1_False']       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+            'mitigation_F1_False',
+            'mitigation_F2_False',
+            'mitigation_F3_False',
+            'mitigation_F4_False',
+            'mitigation_F5_False',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
-FUNCTIONS_DYNAMIC = ['mitigation_none_True', 
+FUNCTIONS_DYNAMIC = [
+            'mitigation_none_True', 
             #'mitigation_degree5_True', 
             #'mitigation_degree10_True', 
             'mitigation_degree15_True',
@@ -78,7 +85,12 @@ FUNCTIONS_DYNAMIC = ['mitigation_none_True',
             'mitigation_degree25_True', 
             'mitigation_traveler_True',
             'mitigation_random_True',
-            'mitigation_F1_True']       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+            'mitigation_F1_True'
+            'mitigation_F2_True',
+            'mitigation_F3_True',
+            'mitigation_F4_True',
+            'mitigation_F5_True',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 ###########
 
