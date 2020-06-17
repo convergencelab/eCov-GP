@@ -2,13 +2,20 @@
 Author:     James Hughes
 Date:       June 11, 2020
 
-Version:    0.1
+Version:    0.2
 
 
 Change Log:
     0.1 (June 11, 2020): 
         - Initial version.
     
+    0.2 (June 17, 2020):
+        - Added degree 20 and 25 simple strategues
+        - Turns out the average degree of a node was 20ish already        
+        - Degree 5, 10 are more-or-less useless
+        - Degree 15 is fine as some non-insignificant number of nodes had degree < 15        
+        
+        
 
 End Change Log
 
@@ -120,6 +127,36 @@ def mitigation_degree15(node_degree,
                         #i,
                         ):
     return node_degree > 15
+
+def mitigation_degree20(node_degree,
+                        #avg_neighbour_degree,
+                        #neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        num_mitigation,
+                        #mitigation,
+                        #num_susexp,
+                        num_infected,
+                        #num_removed,
+                        #i,
+                        ):
+    return node_degree > 20
+
+def mitigation_degree25(node_degree,
+                        #avg_neighbour_degree,
+                        #neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        num_mitigation,
+                        #mitigation,
+                        #num_susexp,
+                        num_infected,
+                        #num_removed,
+                        #i,
+                        ):
+    return node_degree > 25
 
 #####################
 # Generated From AI #
