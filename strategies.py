@@ -223,7 +223,7 @@ def mitigation_F4(node_degree,
                         #num_removed,
                         #i,
                         ):
-    return traveler and neighbour_infected > 5
+    return traveler or neighbour_infected > 5
 
 # This one is weird. but whatever
 def mitigation_F5(node_degree,

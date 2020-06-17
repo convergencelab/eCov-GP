@@ -62,13 +62,13 @@ RESULTS_DIRECTORY = "./function_tests/"
 MEASURE_EVERY = 7
 FUNCTIONS_STATIC = [
             'mitigation_none_False', 
+            'mitigation_random_False',
+            'mitigation_traveler_False',
             #'mitigation_degree5_False', 
             #'mitigation_degree10_False', 
             'mitigation_degree15_False',
             'mitigation_degree20_False',
             'mitigation_degree25_False', 
-            'mitigation_traveler_False',
-            'mitigation_random_False',
             'mitigation_F1_False',
             'mitigation_F2_False',
             'mitigation_F3_False',
@@ -78,14 +78,14 @@ FUNCTIONS_STATIC = [
 
 FUNCTIONS_DYNAMIC = [
             'mitigation_none_True', 
+            'mitigation_random_True',
+            'mitigation_traveler_True',
             #'mitigation_degree5_True', 
             #'mitigation_degree10_True', 
             'mitigation_degree15_True',
             'mitigation_degree20_True', 
             'mitigation_degree25_True', 
-            'mitigation_traveler_True',
-            'mitigation_random_True',
-            'mitigation_F1_True'
+            'mitigation_F1_True',
             'mitigation_F2_True',
             'mitigation_F3_True',
             'mitigation_F4_True',
@@ -206,7 +206,7 @@ def get_function_summary_statistics(measures, measure_keys):
     s = ''
 
     for k in measure_keys:
-        s += ' \t& ' + str(round(np.median(measures[k]), 2)) + ' ($\\pm$ ' + str(round(scipy.stats.iqr(measures[k])/2, 2)) + ')'
+        s += ' \t& ' + str(round(np.median(measures[k]), 2)) + ' & ($\\pm$ ' + str(round(scipy.stats.iqr(measures[k])/2, 2)) + ')'
     
     return s + '\t\\\\\n'
 
