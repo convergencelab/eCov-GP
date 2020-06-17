@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 12, 2020
 
-Version:    0.2
+Version:    0.3
 
 
 Change Log:
@@ -15,6 +15,10 @@ Change Log:
         - Funcitonality to generate table for all strategies 
         - Made a 3/removed prime thing to keep track of removed - effective mitigations
         
+    0.3 (June 17, 2020):
+        - Added functions to generate tables automatically
+            - Results tables
+            - p-val table comparing static and dynamic
 
 End Change Log
 
@@ -57,8 +61,8 @@ import snetwork
 RESULTS_DIRECTORY = "./function_tests/"
 MEASURE_EVERY = 7
 FUNCTIONS_STATIC = ['mitigation_none_False', 
-            'mitigation_degree5_False', 
-            'mitigation_degree10_False', 
+            #'mitigation_degree5_False', 
+            #'mitigation_degree10_False', 
             'mitigation_degree15_False',
             'mitigation_degree20_False',
             'mitigation_degree25_False', 
@@ -67,8 +71,8 @@ FUNCTIONS_STATIC = ['mitigation_none_False',
             'mitigation_F1_False']       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 FUNCTIONS_DYNAMIC = ['mitigation_none_True', 
-            'mitigation_degree5_True', 
-            'mitigation_degree10_True', 
+            #'mitigation_degree5_True', 
+            #'mitigation_degree10_True', 
             'mitigation_degree15_True',
             'mitigation_degree20_True', 
             'mitigation_degree25_True', 
@@ -186,33 +190,31 @@ def get_single_measures(results, m):
     return measures
 
 # Generate a function's summary statistics for a row's in a table
-def get_function_summary_statistics(measures):
+def get_function_summary_statistics(measures, measure_keys):
     s = ''
-    measure_keys = ['susceptible', 
-            'max_infected', 
-            'total_infected', 
-            #'removed',            
-            'removed_p',
-            'mitigation', 
-            'mitigation_effective', 
-            'mitigation_ineffective']
 
     for k in measure_keys:
         s += ' \t& ' + str(round(np.median(measures[k]), 2)) + ' ($\\pm$ ' + str(round(scipy.stats.iqr(measures[k])/2, 2)) + ')'
     
-    return s + '\t\\\\'
+    return s + '\t\\\\\n'
+
+# summary statistics table
+def generate_summary_statistic_table(functions, model, measure_keys):
+    s = ''
+
+    for f in range(len(functions)):
+        data = load_data(functions[f])
+
+        measures = get_single_measures(data, model)
+
+        s += get_function_summary_statistics(measures, measure_keys)
+
+    return s
+
 
 # Generate a function's summary statistics for a row's in a table
-def compare_distros_p_vals(measures1, measures2):
+def compare_distros_p_vals(measures1, measures2, measure_keys):
     s = ''
-    measure_keys = ['susceptible', 
-            'max_infected', 
-            'total_infected', 
-            #'removed',            
-            'removed_p',
-            'mitigation', 
-            'mitigation_effective', 
-            'mitigation_ineffective']
 
     for k in measure_keys:
         try:
@@ -221,8 +223,23 @@ def compare_distros_p_vals(measures1, measures2):
         except:
             s += ' \t& ' + ' --- '
 
+    return s + '\t\\\\\n'
 
-    return s + '\t\\\\'
+
+# p-val statistics table
+def generate_p_val_table(static, dynamic, model, measure_keys):
+    s = ''
+
+    for f in range(len(static)):
+        data_s = load_data(static[f])
+        data_d = load_data(dynamic[f])
+
+        measures_s = get_single_measures(data_s, model)
+        measures_d = get_single_measures(data_d, model)
+
+        s += compare_distros_p_vals(measures_s, measures_d, measure_keys)
+
+    return s
 
 # Compare distros
 # MIGHT WANT THIS TO GENERATE ALL PLOTS?
@@ -274,23 +291,23 @@ def average_epidemic_plot(results, fName, mitigate_period=7):
 
 model = snetwork.setup_network(0,0,0,0, size=500, edge_p=0.04)
 
-for f in range(len(FUNCTIONS_STATIC)):
-    #print(FUNCTIONS_STATIC[f])
-    data_s = load_data(FUNCTIONS_STATIC[f])
-    data_d = load_data(FUNCTIONS_DYNAMIC[f])
+measure_keys = ['susceptible', 
+        'max_infected', 
+        'total_infected', 
+        #'removed',            
+        'removed_p',
+        'mitigation', 
+        'mitigation_effective', 
+        'mitigation_ineffective']
 
-    # Table
-    measures_s = get_single_measures(data_s, model)
-    measures_d = get_single_measures(data_d, model)
+print(generate_summary_statistic_table(FUNCTIONS_STATIC, model, measure_keys))
+print()
 
-    print(compare_distros_p_vals(measures_s, measures_d))
+print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
+print()
 
-    #print()
-    #print(get_function_summary_statistics(measuress))
-
-    #iterations, mitigations = get_all_trends(data, model)
-    #average_trends = get_average_trends(iterations, mitigations)
-
+print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
+print()
 
 
 '''
