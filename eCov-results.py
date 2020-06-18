@@ -75,12 +75,12 @@ import snetwork
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "meh/"
-RESULTS_NAME = "06-18-2020_08-17-49.pkl"
+SUB_DIRECTORY = "good/25_50_500_140_20/"
+RESULTS_NAME = "05-26-2020_03-14-31.pkl"
 
 # Graph & Disease
-GRAPH_DIRECTORY = './../../GRAPHS/'
-GRAPH_NAME = 'github_notop.dat'
+GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'
+GRAPH_NAME = 'Graph0_notop.dat'
 BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
 ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
@@ -97,7 +97,7 @@ ROLLOVER = True
 ##################
 
 
-model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify travelers
 travelers = get_travelers(model)
@@ -154,6 +154,9 @@ for i in range(len(population)):
 ########################
 # Run on SEIR network  #
 ########################
+
+def no_mit(a,b,c,d,e,f):
+    return False
 
 def diffusion_trend(ind):
     iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(ind), m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)

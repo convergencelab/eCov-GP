@@ -158,6 +158,24 @@ def get_average_trends(iterations, mitigations, mitigate_period=7):
     average_trends['3_p'] = np.array(average_trends['3_p'])
     return average_trends
 
+# Generate average epidemic curve plot
+def average_epidemic_plot(results, fName, mitigate_period=7):
+
+    plt.bar(range(mitigate_period, len(results[0]), mitigate_period), results['total'], width=mitigate_period, align='edge', color='m', alpha=0.2, label='Total Mitigations')
+    plt.bar(range(mitigate_period, len(results[0]), mitigate_period), results['effective'], width=mitigate_period, align='edge', color='m', alpha=0.4, label='Effective Mitigations')
+    plt.bar(np.arange(mitigate_period, len(results[0]), mitigate_period), results['ineffective'], width=mitigate_period, align='edge', color='m', alpha=0.6, label='Ineffective Mitigations')
+    plt.plot(results[0], color='b', label='Susceptible')
+    plt.plot(results[1], color='g', label='Exposed')
+    plt.plot(results[2], color='y', label='Infected')
+    plt.plot(results[3], color='r', label='Removed')
+    plt.plot(results['3_p'], color='r', linestyle='--', label='Removed\'')
+
+    plt.title(fName)
+    plt.ylabel('Count')
+    plt.xlabel('Days')
+    plt.legend(loc=1, fontsize=8)
+    plt.show()
+
 
 # Extract Relevant Data for Summary Stats
 def get_single_measures(results, m):
@@ -253,6 +271,45 @@ def generate_p_val_table(static, dynamic, model, measure_keys):
 
     return s
 
+
+def generate_p_val_matrix(functions, function_names, indices, measure, measure_key, model):
+    
+    # Get relevant info
+    f_data = []
+    for ind in indices:
+        f_data.append(get_single_measures(load_data(functions[ind]), model))
+
+
+    # Generate p-val matrix
+    pVals = []
+    for i in range(len(f_data)):
+        pVal_row = []
+        for j in range(len(f_data)):
+            pVal_row.append(scipy.stats.mannwhitneyu(f_data[i][measure_key], f_data[j][measure_key])[1])    
+            #pVal_row.append(scipy.stats.ttest_ind(f_data[i][measure_key], f_data[j][measure_key])[1])    
+        pVals.append(pVal_row)
+
+    pVals = np.array(pVals)
+    plt.matshow(pVals)
+
+    for (i, j), z in np.ndenumerate(pVals):
+        if z < 0.1:
+            plt.text(j, i, '{:0.2e}'.format(z), ha='center', va='center', color='w')
+        else:    
+            plt.text(j, i, '{:0.2e}'.format(z), ha='center', va='center')
+
+    plt.title(measure)
+    plt.xticks(range(len(function_names)), function_names)
+    plt.yticks(range(len(function_names)), function_names, rotation = 90)
+
+    plt.colorbar(label='Mann-Whitney U Test p-Value')
+
+
+
+    plt.show()
+
+
+
 # Compare distros
 # MIGHT WANT THIS TO GENERATE ALL PLOTS?
 def compare_distros(d1, d2, f1_name, f2_name, metric):
@@ -260,16 +317,19 @@ def compare_distros(d1, d2, f1_name, f2_name, metric):
     pVal = scipy.stats.mannwhitneyu(d1, d2)
     print(pVal)
     
-    plt.title('A Title')
+    plt.title(metric + ': ' + f1_name + ' vs. ' + f2_name)
     plt.xlabel(metric)
     plt.ylabel('Count')
 
-    # Distros
-    plt.hist(d1, color='b', alpha=0.75, label=f1_name)
-    plt.axvline(np.median(d1), color='b', label=f1_name + ' Median')
+    # Get good number of bins
+    bins = np.histogram(np.hstack((d1,d2)), bins=25)[1]
 
-    plt.hist(d2, color='r', alpha=0.75, label=f2_name)
-    plt.axvline(np.median(d2), color='r', label=f2_name + ' Median')
+    # Plot Distros
+    plt.hist(d1, color='b', alpha=0.66, label=f1_name, bins=bins)
+    plt.axvline(np.median(d1), color='b', label=f1_name + ' Median (' + str(round(np.median(d1), 2)) + ')')
+
+    plt.hist(d2, color='r', alpha=0.66, label=f2_name, bins=bins)
+    plt.axvline(np.median(d2), color='r', label=f2_name + ' Median (' + str(round(np.median(d2), 2)) + ')')
     
     plt.legend()
     plt.show()
@@ -277,25 +337,6 @@ def compare_distros(d1, d2, f1_name, f2_name, metric):
     return pVal
 
 
-
-
-# Generate average epidemic curve plot
-def average_epidemic_plot(results, fName, mitigate_period=7):
-
-    plt.bar(range(mitigate_period, len(results[0]), mitigate_period), results['total'], width=mitigate_period, align='edge', color='m', alpha=0.2, label='Total Mitigations')
-    plt.bar(range(mitigate_period, len(results[0]), mitigate_period), results['effective'], width=mitigate_period, align='edge', color='m', alpha=0.4, label='Effective Mitigations')
-    plt.bar(np.arange(mitigate_period, len(results[0]), mitigate_period), results['ineffective'], width=mitigate_period, align='edge', color='m', alpha=0.6, label='Ineffective Mitigations')
-    plt.plot(results[0], color='b', label='Susceptible')
-    plt.plot(results[1], color='g', label='Exposed')
-    plt.plot(results[2], color='y', label='Infected')
-    plt.plot(results[3], color='r', label='Removed')
-    plt.plot(results['3_p'], color='r', linestyle='--', label='Removed\'')
-
-    plt.title(fName)
-    plt.ylabel('Count')
-    plt.xlabel('Days')
-    plt.legend(loc=1, fontsize=8)
-    plt.show()
 
 
 
@@ -312,38 +353,35 @@ measure_keys = ['susceptible',
         'mitigation_effective', 
         'mitigation_ineffective']
 
-print(generate_summary_statistic_table(FUNCTIONS_STATIC, model, measure_keys))
-print()
+#print(generate_summary_statistic_table(FUNCTIONS_STATIC, model, measure_keys))
+#print()
 
-print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
-print()
+#print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
+#print()
 
-print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
-print()
-
-
-'''
-f1 = load_data('mitigation_F1_False')
-random = load_data('mitigation_random_False')
-
-model = snetwork.setup_network(0,0,0,0, size=500, edge_p=0.04)
-
-m = get_single_measures(f1, model)
-n = get_single_measures(random, model)
-compare_distros(m['max_infected'], n['max_infected'], 'f1','rando','max_infected')
-compare_distros(m['total_infected'], n['total_infected'], 'f1','rando','removed')
-compare_distros(m['mitigation'], n['mitigation'], 'f1','rando','Mitigations')
-
-i, m = get_all_trends(f1, model)
-a = get_average_trends(i, m)
-
-average_epidemic_plot(a, 'F1')
+#print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
+#print()
 
 
-i, m = get_all_trends(random, model)
-a = get_average_trends(i, m)
+d20 = load_data('mitigation_degree20_True')
+f1 = load_data('mitigation_F1_True')
+f3 = load_data('mitigation_F3_True')
+f5 = load_data('mitigation_F5_True')
 
-average_epidemic_plot(a, 'Random')
+#a = get_average_trends(*get_all_trends(f5, model))
+#average_epidemic_plot(a, 'Trends: F5')
 
-'''
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Susceptible', 'susceptible', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Max Infected', 'max_infected', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Total Infected', 'total_infected', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Mitigations', 'mitigation', model)
 
+f1_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[6]), model)
+f3_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[8]), model)
+f5_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[10]), model)
+
+compare_distros(f3_m['total_infected'], f1_m['total_infected'], 'F3', 'F1', "Total Infected")
+compare_distros(f3_m['total_infected'], f5_m['total_infected'], 'F3', 'F5', "Total Infected")
+
+compare_distros(f3_m['mitigation'], f1_m['mitigation'], 'F3', 'F1', "Total Mitigations")
+compare_distros(f3_m['mitigation'], f5_m['mitigation'], 'F3', 'F5', "Total Mitigations")
