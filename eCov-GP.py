@@ -122,7 +122,7 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 25
+POPULATION = 50
 GENERATIONS = 50
 CROSSOVER = 0.75
 MUTATION = 0.1
@@ -157,7 +157,7 @@ def evaluate_population(pop):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
         final_susceptible, max_infected, total_infected, final_removed = evaluate.convert_iterations(fit[0], model)
         total_mitigations, effective_mitigations, ineffective_mitigations = evaluate.convert_iterations_mitigations(fit[1])
-        ind.fitness.values = (final_susceptible, total_mitigations, )
+        ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
 
 
 

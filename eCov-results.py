@@ -75,8 +75,8 @@ import snetwork
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "good/55_50_500_140_20/"
-RESULTS_NAME = "05-28-2020_03-46-40.pkl"
+SUB_DIRECTORY = "meh/"
+RESULTS_NAME = "06-18-2020_08-17-49.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -101,6 +101,8 @@ model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta
 
 # Identify travelers
 travelers = get_travelers(model)
+
+average_degree = get_average_degree(model)
 
 ############
 # GP Setup #
@@ -154,7 +156,7 @@ for i in range(len(population)):
 ########################
 
 def diffusion_trend(ind):
-    iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(ind), m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+    iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(ind), m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
     trends = model.build_trends(iterations)
     # Visualization
     viz = DiffusionTrend(model, trends)
