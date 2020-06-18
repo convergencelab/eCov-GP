@@ -122,7 +122,7 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 50
+POPULATION = 25
 GENERATIONS = 50
 CROSSOVER = 0.75
 MUTATION = 0.1
@@ -136,7 +136,7 @@ ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
 EDGE_p = 0.04
-ITERATIONS = 140        
+ITERATIONS = 140
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
 ROLLOVER = True
