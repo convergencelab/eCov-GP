@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.7
+Version:    0.8
 
 
 Change Log:
@@ -33,6 +33,9 @@ Change Log:
     0.7 (June 8, 2020):
         - Split files into sub-files of logical units
         - Files will be imported 
+
+    0.8 (June 17, 2020):
+        - Small changes to system to allow for new measure (average degree)
 
 
 End Change Log
@@ -167,13 +170,14 @@ model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta
 
 # Identify travelers
 travelers = get_travelers(model)
+average_degree = get_average_degree(model)
 
 
 ############
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 
 
 #######################
@@ -232,7 +236,7 @@ results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
 # plot difftrend so it doesn't crash because of SCOOP
-iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(population[0]), m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(population[0]), m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 trends = model.build_trends(iterations)
 # Visualization
 viz = DiffusionTrend(model, trends)
