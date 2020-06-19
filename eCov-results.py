@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.7
+Version:    0.8
 
 Change Log:
     0.1: 
@@ -30,6 +30,9 @@ Change Log:
     0.7 (June 8, 2020):
         - Split files into sub-files of logical units
         - Files will be imported 
+
+    0.3 (June 19, 2020):
+        - Small change to allow the new average degree measure
 
 End Change Log
 
@@ -75,8 +78,8 @@ import snetwork
 ###########
 
 RESULTS_DIRECTORY = "./output/"
-SUB_DIRECTORY = "good/25_50_500_140_20/"
-RESULTS_NAME = "05-26-2020_03-14-31.pkl"
+SUB_DIRECTORY = ""
+RESULTS_NAME = "06-19-2020_02-14-25.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'

@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.8
+Version:    0.9
 
 
 Change Log:
@@ -37,6 +37,8 @@ Change Log:
     0.8 (June 17, 2020):
         - Small changes to system to allow for new measure (average degree)
 
+    0.9 (June 19, 2020):
+        - Added more values to optimize (max infected, total infected)
 
 End Change Log
 
