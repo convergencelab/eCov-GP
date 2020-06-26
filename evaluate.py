@@ -13,6 +13,9 @@ Change Log:
     0.2 (June 17, 2020):
         - Update to use new static measure of average graph degree
 
+    0.3 (June 19, 2020):
+        - Added more values to optimize (max infected, total infected)
+
 
 End Change Log
 

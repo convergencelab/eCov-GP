@@ -371,11 +371,12 @@ f5 = load_data('mitigation_F5_True')
 #a = get_average_trends(*get_all_trends(f5, model))
 #average_epidemic_plot(a, 'Trends: F5')
 
-#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Susceptible', 'susceptible', model)
-#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Max Infected', 'max_infected', model)
-#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Total Infected', 'total_infected', model)
-#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Mitigations', 'mitigation', model)
+generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Susceptible', 'susceptible', model)
+generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Max Infected', 'max_infected', model)
+generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Total Infected', 'total_infected', model)
+generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Mitigations', 'mitigation', model)
 
+'''
 f1_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[6]), model)
 f3_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[8]), model)
 f5_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[10]), model)
@@ -385,3 +386,4 @@ compare_distros(f3_m['total_infected'], f5_m['total_infected'], 'F3', 'F5', "Tot
 
 compare_distros(f3_m['mitigation'], f1_m['mitigation'], 'F3', 'F1', "Total Mitigations")
 compare_distros(f3_m['mitigation'], f5_m['mitigation'], 'F3', 'F5', "Total Mitigations")
+'''
