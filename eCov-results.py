@@ -31,7 +31,7 @@ Change Log:
         - Split files into sub-files of logical units
         - Files will be imported 
 
-    0.3 (June 19, 2020):
+    0.8 (June 19, 2020):
         - Small change to allow the new average degree measure
 
 End Change Log

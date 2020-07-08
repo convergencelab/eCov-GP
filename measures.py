@@ -65,7 +65,7 @@ def get_travelers(model):
 
     return all_travelers
 
-# Get thje average degree of the graph
+# Get the average degree of the graph
 def get_average_degree(model):
     d = []
 
