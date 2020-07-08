@@ -13,6 +13,9 @@ Change Log:
         - Watts-Strogatz Graph added as a type of random network
         - I am not that confident in it though as the way it is implemented seems to enforce a fixed edge number. In other words, there is no variation in the number of neighbours that we would see in reality 
 
+    0.3 (July 8, 2020):
+        - Switched to 'connected' WS graph (to make sure we end up with a connected graph). Although unlikely to be disconnected, this is _safer_
+
 
 End Change Log
 
@@ -48,7 +51,7 @@ def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=
     if directory == None:
         g = nx.erdos_renyi_graph(size, edge_p)
     elif edge_p == None:
-        g = watts_strogatz_graph(size, knn, rewire_p)
+        g = connected_watts_strogatz_graph(size, knn, rewire_p)
     else:    
         g = nx.read_adjlist(os.path.join(directory, name), delimiter='\t', nodetype=int)
 
