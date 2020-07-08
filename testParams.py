@@ -86,3 +86,6 @@ viz.plot()
 nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
 plt.show()
 
+mvc = get_min_vertex_cover(model)
+print(len(mvc))
+

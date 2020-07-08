@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.2
+Version:    0.3
 
 
 Change Log:
@@ -10,8 +10,12 @@ Change Log:
         - Initial version
 
     0.2 (June 17, 2020):
-        - Added average degree static graph measure
+        - Add average degree static graph measure
     
+    0.3 (July 8, 2020):
+        - Add minimal vertex cover approx to the list of static measures 
+        - Add local measure to tell is a given vertex is in the minimal vertex cover
+        - I DO NOT THINK IT WORKS RIGHT THOUGH....
 
 
 End Change Log
@@ -33,6 +37,7 @@ import ndlib.models.ModelConfig as mc
 import ndlib.models.epidemics as ep
 import networkx as nx
 import networkx.algorithms.community as comm
+import networkx.algorithms.approximation as appr
 import numpy as np
 import random
 
@@ -64,6 +69,12 @@ def get_travelers(model):
                 all_travelers.add(t[1])
 
     return all_travelers
+
+# Approx minimal vertex cover
+# WARNING: 
+#       - I do not trust this... 
+def get_min_vertex_cover(model):
+    return appr.min_weighted_vertex_cover(model.graph)
 
 # Get the average degree of the graph
 def get_average_degree(model):
@@ -141,6 +152,10 @@ def get_avg_neighbour_degree(model, node):
 # is the current node a traveller
 def is_traveler(travelers, node):
     return node in travelers
+
+# Is the current node in the minimal vertex cover
+def is_in_min_cover(mvc, node):
+    return node in mvc
 
 # get number of neighbors of a certain status
 def get_num_neighbour_status(model, node, target_status=0):
