@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 9, 2020
 
-Version:    0.2
+Version:    0.3
 
 
 Change Log:
@@ -51,7 +51,7 @@ def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=
     if directory == None:
         g = nx.erdos_renyi_graph(size, edge_p)
     elif edge_p == None:
-        g = connected_watts_strogatz_graph(size, knn, rewire_p)
+        g = nx.connected_watts_strogatz_graph(size, knn, rewire_p)
     else:    
         g = nx.read_adjlist(os.path.join(directory, name), delimiter='\t', nodetype=int)
 
