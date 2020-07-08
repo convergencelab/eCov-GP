@@ -138,7 +138,11 @@ ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
 EDGE_p = 0.04
-ITERATIONS = 140
+KNN = 20
+REWIRE_p = 0.20
+DROP = 1000
+EDGE_p = 0.04
+ITERATIONS = 182
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
 ROLLOVER = True
@@ -167,8 +171,8 @@ def evaluate_population(pop):
 # Epidemic Setup #
 ##################
 
-model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-
+#model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, drop=DROP, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify travelers
 travelers = get_travelers(model)

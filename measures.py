@@ -15,7 +15,8 @@ Change Log:
     0.3 (July 8, 2020):
         - Add minimal vertex cover approx to the list of static measures 
         - Add local measure to tell is a given vertex is in the minimal vertex cover
-        - I DO NOT THINK IT WORKS RIGHT THOUGH....
+        - This was Athar's idea (good one too)
+        - I DO NOT THINK IT WORKS RIGHT THOUGH AS IMPLEMENTED
 
 
 End Change Log
