@@ -50,6 +50,12 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 from measures import * 
 from language import *
 
+STATUS_SUSCEPTIBLE = 0
+STATUS_EXPOSED = 2
+STATUS_INFECTED = 1
+STATUS_REMOVED = 3
+STATUS_MITIGATED = 4
+
 
 ######################
 # Fitness Evaluation #
@@ -78,18 +84,18 @@ def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measur
             # Identify those that are able to hav emitigation applied
             # Remember, we pretend we do not know that exposed are exposed
             susceptible = get_all_of_status(m)
-            exposed = get_all_of_status(m, target_status=1)
-            #infected = get_all_of_status(m, target_status=2)
+            exposed = get_all_of_status(m, target_status=STATUS_EXPOSED)
+            #infected = get_all_of_status(m, target_status=STATUS_INFECTED)
             susexp = susceptible + exposed
             # Shuffle because we have limited resources and don't want any ordering
             random.shuffle(susexp)          
 
             
             num_suscept = get_num_nodes(m)
-            num_exposed = get_num_nodes(m, target_status=1)
+            num_exposed = get_num_nodes(m, target_status=STATUS_EXPOSED)
             num_susexp = num_suscept + num_exposed
-            num_infected = get_num_nodes(m, target_status=2)
-            num_removed = get_num_nodes(m, target_status=3)
+            num_infected = get_num_nodes(m, target_status=STATUS_INFECTED)
+            num_removed = get_num_nodes(m, target_status=STATUS_REMOVED)
 
             #print(max_infected, '\t', total_infected, '\t', num_recovered - total_mitigation, '\t', total_mitigation)
 
@@ -112,9 +118,9 @@ def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measur
                     node_status = get_status(m, s)
                     node_degree = get_degree(m, s)
                     avg_neighbour_degree = get_avg_neighbour_degree(m, s)
-                    neighbour_susexp = get_num_neighbour_status(m, s, target_status=0) + get_num_neighbour_status(m, s, target_status=1)
-                    neighbour_infected = get_num_neighbour_status(m, s, target_status=2) 
-                    neighbour_removed = get_num_neighbour_status(m, s, target_status=3) 
+                    neighbour_susexp = get_num_neighbour_status(m, s, target_status=STATUS_SUSCEPTIBLE) + get_num_neighbour_status(m, s, target_status=STATUS_EXPOSED)
+                    neighbour_infected = get_num_neighbour_status(m, s, target_status=STATUS_INFECTED) 
+                    neighbour_removed = get_num_neighbour_status(m, s, target_status=STATUS_REMOVED) 
                     traveler = is_traveler(traveler_set, s)
                     num_mitigation = mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used)
                     mitigation = get_cur_mitigations(mitigations_per_measure + rollover_mitigations, mitigations_used)
@@ -135,11 +141,11 @@ def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measur
                                         #i,
                                         )
                     if do_we_mitigate:
-                        if node_status == 0:
+                        if node_status == STATUS_SUSCEPTIBLE:
                             cur_num_mitigated = mitigate_self(m, s)
                             mitigations_used += cur_num_mitigated
                             mitigations_used_effective += cur_num_mitigated
-                            mitigations_step['status'][s] = 4
+                            mitigations_step['status'][s] = STATUS_MITIGATED
 
                         # Apply mitigation to exposed, but this wastes mitigation                        
                         else:
@@ -156,15 +162,15 @@ def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measur
             total_mitigation += mitigations_used
             total_mitigation_effective += mitigations_used_effective
 
-            mitigations_step['node_count'][4] = total_mitigation_effective
-            mitigations_step['status_delta'][4] = mitigations_used_effective
+            mitigations_step['node_count'][STATUS_MITIGATED] = total_mitigation_effective
+            mitigations_step['status_delta'][STATUS_MITIGATED] = mitigations_used_effective
             mitigations_step['total_mitigations']['total'] = mitigations_used
             mitigations_step['total_mitigations']['effective'] = mitigations_used_effective
             mitigations_step['total_mitigations']['ineffective'] = mitigations_used - mitigations_used_effective
 
             iterations_mitigations.append(mitigations_step)
 
-        current_infected = get_num_nodes(m, target_status=2)
+        current_infected = get_num_nodes(m, target_status=STATUS_INFECTED)
         total_infected += current_infected
         max_infected = max(max_infected, current_infected)
 
@@ -172,7 +178,7 @@ def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measur
         
 
     final_num_susceptible = get_num_nodes(m)    
-    final_num_removed = get_num_nodes(m, target_status=3)
+    final_num_removed = get_num_nodes(m, target_status=STATUS_REMOVED)
 
     # Use this between chromosome evals
     # Will reset network with same params
@@ -223,10 +229,10 @@ def mitigation_trends(iterations_mitigations):
 
 def convert_iterations(iterations, m):
     trends = m.build_trends(iterations)
-    final_susceptible = iterations[-1]['node_count'][0]
-    final_removed = iterations[-1]['node_count'][3]
-    max_infected = max(trends[0]['trends']['node_count'][2])
-    total_infected = sum(trends[0]['trends']['node_count'][2])  # Area under curve 
+    final_susceptible = iterations[-1]['node_count'][STATUS_SUSCEPTIBLE]
+    final_removed = iterations[-1]['node_count'][STATUS_REMOVED]
+    max_infected = max(trends[0]['trends']['node_count'][STATUS_INFECTED])
+    total_infected = sum(trends[0]['trends']['node_count'][STATUS_INFECTED])  # Area under curve 
     return final_susceptible, max_infected, total_infected, final_removed, 
 
 def convert_iterations_mitigations(iterations_mitigations):

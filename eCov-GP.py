@@ -124,8 +124,8 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 25
-GENERATIONS = 50
+POPULATION = 100
+GENERATIONS = 100
 CROSSOVER = 0.75
 MUTATION = 0.1
 
@@ -172,7 +172,7 @@ def evaluate_population(pop):
 ##################
 
 #model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, drop=DROP, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, drop=DROP, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify travelers
 travelers = get_travelers(model)
