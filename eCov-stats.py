@@ -92,6 +92,13 @@ FUNCTIONS_DYNAMIC = [
             'mitigation_F5_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
+STATUS_SUSCEPTIBLE = 0
+STATUS_EXPOSED = 2
+STATUS_INFECTED = 1
+STATUS_REMOVED = 3
+STATUS_MITIGATED = 4
+
+
 ###########
 
 # Load the data from the pickle
@@ -119,10 +126,10 @@ def get_all_trends(results, m):
 def get_average_trends(iterations, mitigations, mitigate_period=7):
 
     average_trends = {}
-    average_trends[0] = []
-    average_trends[1] = []
-    average_trends[2] = []
-    average_trends[3] = []
+    average_trends[STATUS_SUSCEPTIBLE] = []
+    average_trends[STATUS_EXPOSED] = []
+    average_trends[STATUS_INFECTED] = []
+    average_trends[STATUS_REMOVED] = []
     average_trends['3_p'] = []
     average_trends['total'] = []
     average_trends['effective'] = []
@@ -130,29 +137,29 @@ def get_average_trends(iterations, mitigations, mitigate_period=7):
 
     # Could defo make this more general
     for i in range(len(iterations)): 
-        average_trends[0].append(iterations[i]['node_count'][0])
-        average_trends[1].append(iterations[i]['node_count'][1])
-        average_trends[2].append(iterations[i]['node_count'][2])
-        average_trends[3].append(iterations[i]['node_count'][3])
+        average_trends[STATUS_SUSCEPTIBLE].append(iterations[i]['node_count'][STATUS_SUSCEPTIBLE])
+        average_trends[STATUS_EXPOSED].append(iterations[i]['node_count'][STATUS_EXPOSED])
+        average_trends[STATUS_INFECTED].append(iterations[i]['node_count'][STATUS_INFECTED])
+        average_trends[STATUS_REMOVED].append(iterations[i]['node_count'][STATUS_REMOVED])
         average_trends['total'].append(mitigations[i]['node_count']['total'])
         average_trends['effective'].append(mitigations[i]['node_count']['effective'])
         average_trends['ineffective'].append(mitigations[i]['node_count']['ineffective'])
 
-    average_trends[0] = np.average(average_trends[0], axis=0)
-    average_trends[1] = np.average(average_trends[1], axis=0)
-    average_trends[2] = np.average(average_trends[2], axis=0)
-    average_trends[3] = np.average(average_trends[3], axis=0)
+    average_trends[STATUS_SUSCEPTIBLE] = np.average(average_trends[STATUS_SUSCEPTIBLE], axis=0)
+    average_trends[STATUS_EXPOSED] = np.average(average_trends[STATUS_EXPOSED], axis=0)
+    average_trends[STATUS_INFECTED] = np.average(average_trends[STATUS_INFECTED], axis=0)
+    average_trends[STATUS_REMOVED] = np.average(average_trends[STATUS_REMOVED], axis=0)
     average_trends['total'] = np.average(average_trends['total'], axis=0)
     average_trends['effective'] = np.average(average_trends['effective'], axis=0)
     average_trends['ineffective'] = np.average(average_trends['ineffective'], axis=0)
 
     # 3_PRIME
     # Since we only have 1 mitigate count for every mitigation_period, we need to count carefully
-    for i in range(len(average_trends[3])):
+    for i in range(len(average_trends[STATUS_REMOVED])):
         if(i < mitigate_period):
-            average_trends['3_p'].append(average_trends[3][i])
+            average_trends['3_p'].append(average_trends[STATUS_REMOVED][i])
         else:
-            average_trends['3_p'].append(average_trends[3][i] - average_trends['effective'][(i - mitigate_period)//mitigate_period])
+            average_trends['3_p'].append(average_trends[STATUS_REMOVED][i] - average_trends['effective'][(i - mitigate_period)//mitigate_period])
 
     # Make the 3' an array
     average_trends['3_p'] = np.array(average_trends['3_p'])
@@ -164,10 +171,10 @@ def average_epidemic_plot(results, fName, mitigate_period=7):
     plt.bar(range(mitigate_period, len(results[0]), mitigate_period), results['total'], width=mitigate_period, align='edge', color='m', alpha=0.2, label='Total Mitigations')
     plt.bar(range(mitigate_period, len(results[0]), mitigate_period), results['effective'], width=mitigate_period, align='edge', color='m', alpha=0.4, label='Effective Mitigations')
     plt.bar(np.arange(mitigate_period, len(results[0]), mitigate_period), results['ineffective'], width=mitigate_period, align='edge', color='m', alpha=0.6, label='Ineffective Mitigations')
-    plt.plot(results[0], color='b', label='Susceptible')
-    plt.plot(results[1], color='g', label='Exposed')
-    plt.plot(results[2], color='y', label='Infected')
-    plt.plot(results[3], color='r', label='Removed')
+    plt.plot(results[STATUS_SUSCEPTIBLE], color='b', label='Susceptible')
+    plt.plot(results[STATUS_EXPOSED], color='g', label='Exposed')
+    plt.plot(results[STATUS_INFECTED], color='y', label='Infected')
+    plt.plot(results[STATUS_REMOVED], color='r', label='Removed')
     plt.plot(results['3_p'], color='r', linestyle='--', label='Removed\'')
 
     plt.title(fName)
