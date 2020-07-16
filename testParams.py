@@ -38,13 +38,13 @@ import sgp
 import snetwork
 
 # Graph & Disease
-GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'
+GRAPH_DIRECTORY = './../GRAPHS/Guelph/'
 GRAPH_NAME = 'Graph0_notop.dat'
 
 BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
 ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
-INFECTED_0 = 0.01
+INFECTED_0 = 0.1
 ITERATIONS = 182  
 
 GRAPH_SIZE = 500
@@ -66,7 +66,7 @@ def get_average_degree(model):
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
-model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 print(get_average_degree(model))
 
@@ -87,5 +87,5 @@ nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey'
 plt.show()
 
 mvc = get_min_vertex_cover(model)
-print(len(mvc))
+#print(len(mvc))
 
