@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 12, 2020
 
-Version:    0.3
+Version:    0.4
 
 
 Change Log:
@@ -19,6 +19,10 @@ Change Log:
         - Added functions to generate tables automatically
             - Results tables
             - p-val table comparing static and dynamic
+
+    0.4 (July 15, 2020):
+        - Added constants for node status
+        - Fixed node status issue (had originally swapped exposed and infected)
 
 End Change Log
 
@@ -360,14 +364,14 @@ measure_keys = ['susceptible',
         'mitigation_effective', 
         'mitigation_ineffective']
 
-#print(generate_summary_statistic_table(FUNCTIONS_STATIC, model, measure_keys))
-#print()
+print(generate_summary_statistic_table(FUNCTIONS_STATIC, model, measure_keys))
+print()
 
-#print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
-#print()
+print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
+print()
 
-#print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
-#print()
+print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
+print()
 
 
 d20 = load_data('mitigation_degree20_True')
@@ -375,8 +379,8 @@ f1 = load_data('mitigation_F1_True')
 f3 = load_data('mitigation_F3_True')
 f5 = load_data('mitigation_F5_True')
 
-#a = get_average_trends(*get_all_trends(f5, model))
-#average_epidemic_plot(a, 'Trends: F5')
+a = get_average_trends(*get_all_trends(f1, model))
+#average_epidemic_plot(a, 'Trends: F1')
 
 generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Susceptible', 'susceptible', model)
 generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Max Infected', 'max_infected', model)
