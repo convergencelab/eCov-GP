@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.3
+Version:    0.4
 
 
 Change Log:
@@ -16,6 +16,9 @@ Change Log:
     0.3 (June 19, 2020):
         - Added more values to optimize (max infected, total infected)
 
+    0.4 (July 15, 2020):
+        - Added constants for node status
+        - Fixed node status issue (had originally swapped exposed and infected)
 
 End Change Log
 
@@ -62,7 +65,7 @@ STATUS_MITIGATED = 4
 ######################
    
 # Fitness Function
-def evaluate_individual(f, m, traveler_set, avg_degree, total_iterations, measure_every, mitigations_per_measure, rollover):
+def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False):
 
     max_infected = 0
     total_infected = 0
