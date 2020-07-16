@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 9, 2020
 
-Version:    0.4
+Version:    0.5
 
 
 Change Log:
@@ -18,6 +18,11 @@ Change Log:
 
     0.4 (July 8, 2020):
         - Switched to newman watts stogatz as it has a probability of adding NEW edges (so we get a better range of connectivity)
+
+    0.5 (July 16, 2020):
+        - Added the ability to use Barabasi-Albert graph
+        - Done because it seems to popular 
+        - http://www-math.mit.edu/~apost/courses/18.204_2018/Lee_Bernick_paper.pdf
 
 End Change Log
 
@@ -46,16 +51,16 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 # Epidemic Setup #
 ##################
 
-def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=None, edge_p=None, knn=None, rewire_p=None, drop=None):
+def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=None, edge_p=None, knn=None, rewire_p=None, drop=None, m=None):
 
     # Network topology
     
     # Create Graph  
-    if directory == None and knn==None:
+    if edge_p != None:
         print("Making ER Graph")
         g = nx.erdos_renyi_graph(size, edge_p)
 
-    elif directory == None and edge_p == None:
+    elif knn != None:
         print("Making NWS Graph with drops")
         g = nx.newman_watts_strogatz_graph(size, knn, rewire_p)
 
@@ -63,6 +68,8 @@ def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=
         for i in range(drop):
             e = random.choice(list(g.edges))
             g.remove_edge(e[0], e[1])
+    elif m != None:
+        g = nx.barabasi_albert_graph(size, m)
 
     else:    
         print("Loading custom Graph")

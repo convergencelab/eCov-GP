@@ -44,14 +44,20 @@ GRAPH_NAME = 'Graph0_notop.dat'
 BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
 ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
-INFECTED_0 = 0.1
+INFECTED_0 = 0.01
 ITERATIONS = 182  
 
+# For ER graph
 GRAPH_SIZE = 500
 EDGE_p = 0.04
+
+# For NWS graph
 KNN = 20
 REWIRE_p = 0.20
 DROP = 1000
+
+# for BA graph
+M = 9      
 
       
 # Get the average degree of the graph
@@ -66,7 +72,8 @@ def get_average_degree(model):
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 print(get_average_degree(model))
 
