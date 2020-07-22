@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.9
+Version:    0.10
 
 
 Change Log:
@@ -39,6 +39,9 @@ Change Log:
 
     0.9 (June 19, 2020):
         - Added more values to optimize (max infected, total infected)
+
+    0.10 (July 22, 2020):
+        - Updated alpha to reflect the latent period, NOT a probability
 
 End Change Log
 
@@ -124,25 +127,29 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 100
-GENERATIONS = 100
+POPULATION = 50
+GENERATIONS = 50
 CROSSOVER = 0.75
 MUTATION = 0.1
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
 GRAPH_NAME = 'github_notop.dat'
-BETA = 0.025            # Spread Probability
+BETA = 0.050            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
-ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
+ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
+# For ER graph
 EDGE_p = 0.04
+# For NWS graph
 KNN = 20
 REWIRE_p = 0.20
 DROP = 1000
-EDGE_p = 0.04
-ITERATIONS = 182
+# for BA graph
+M = 9 
+
+ITERATIONS = 91
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
 ROLLOVER = True
@@ -172,7 +179,9 @@ def evaluate_population(pop):
 ##################
 
 #model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, drop=DROP, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, drop=DROP, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify travelers
 travelers = get_travelers(model)

@@ -2,12 +2,15 @@
 Author:     James Hughes
 Date:       July 8, 2020
 
-Version:    0.1
+Version:    0.2
 
 
 Change Log:
     0.1 (July 8, 2020): 
         - Initial version.
+
+    0.2 (July 22, 2020):
+        - Updated alpha to reflect the latent period, NOT a probability
    
         
 
@@ -41,11 +44,11 @@ import snetwork
 GRAPH_DIRECTORY = './../GRAPHS/Guelph/'
 GRAPH_NAME = 'Graph0_notop.dat'
 
-BETA = 0.025            # Spread Probability
+BETA = 0.05             # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
-ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
+ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
-ITERATIONS = 182  
+ITERATIONS = 91  
 
 # For ER graph
 GRAPH_SIZE = 500
@@ -72,8 +75,13 @@ def get_average_degree(model):
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# ER
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# NWS
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# BA
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 print(get_average_degree(model))
 

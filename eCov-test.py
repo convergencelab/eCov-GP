@@ -2,12 +2,15 @@
 Author:     James Hughes
 Date:       June 11, 2020
 
-Version:    0.1
+Version:    0.2
 
 
 Change Log:
     0.1 (June 11, 2020): 
         - Initial version.
+
+    0.2 (July 22, 2020):
+        - Updated alpha to reflect the latent period, NOT a probability
     
 End Change Log
 
@@ -39,7 +42,7 @@ GRAPH_DIRECTORY = './../../GRAPHS/'
 GRAPH_NAME = 'github_notop.dat'
 BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
-ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
+ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
 EDGE_p = 0.04

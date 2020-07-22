@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.8
+Version:    0.9
 
 Change Log:
     0.1: 
@@ -33,6 +33,9 @@ Change Log:
 
     0.8 (June 19, 2020):
         - Small change to allow the new average degree measure
+
+    0.9 (July 22, 2020):
+        - Updated alpha to reflect the latent period, NOT a probability
 
 End Change Log
 
@@ -86,7 +89,7 @@ GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'
 GRAPH_NAME = 'Graph0_notop.dat'
 BETA = 0.025            # Spread Probability
 GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
-ALPHA = 0.175           # Recovery Probability. Based on 5.2 days, from sources
+ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
 EDGE_p = 0.04
