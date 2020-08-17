@@ -18,6 +18,9 @@ Change Log:
         - This was Athar's idea (good one too)
         - I DO NOT THINK IT WORKS RIGHT THOUGH AS IMPLEMENTED
 
+    0.4 (August 10, 2020):
+        - Changes average degree of node to only calculate the avg. degree on a single node, not all (way faster) 
+
 
 End Change Log
 
@@ -148,7 +151,8 @@ def get_degree(model, node):
 
 # average degree of the neighbours of a node
 def get_avg_neighbour_degree(model, node):
-    return nx.average_neighbor_degree(model.graph.graph)[node]
+    #return nx.average_neighbor_degree(model.graph.graph)[node]
+    return nx.average_neighbor_degree(model.graph.graph, nodes=[node])[node]
 
 # is the current node a traveller
 def is_traveler(travelers, node):

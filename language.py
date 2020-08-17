@@ -95,42 +95,42 @@ def protectedDiv(a, b):
 language = gp.PrimitiveSetTyped("MAIN", 
                                 [#float,       # Node Status (0 - susceptible, 1 - exposed, 2 - infected, 3 - removed)
                                  float,       # Degree of Node
-                                 #float,      # Average degree of node neighbours
-                                 #float,       # Number of neighbours susceptible + exposed
+                                 float,      # Average degree of node neighbours
+                                 float,       # Number of neighbours susceptible + exposed
                                  float,       # Number of neighbours infected
                                  #float,       # Number of neighbours removed
                                  bool,      # Is traveler
                                  float,     # Average degree of Nodes in Graph
                                  float,       # Number of mitigations available
                                  #bool,      # Is mitigation available
-                                 #float,       # Total number of susceptible and exposed
+                                 float,       # Total number of susceptible and exposed
                                  float,       # Total number of infected
-                                 #float,       # Total number of removed
+                                 float,       # Total number of removed
                                  #float,     # Average distance between all susceptible and exposed
                                  #float,     # Average distance between all infected
                                  #float,     # Average distance between all removed 
-                                 #float,     # Iteration number
+                                 float,     # Iteration number
                                 ],
                                 bool,       # Do we vaccinate?
                                 "ARG")
 
 #language.renameArguments(ARG0='STATUS')
 language.renameArguments(ARG0='DEGREE')
-#language.renameArguments(ARG1='NB_DEGREE')
-#language.renameArguments(ARG2='NB_SUSEXP')
-language.renameArguments(ARG1='NB_INFECT')
+language.renameArguments(ARG1='NB_DEGREE')
+language.renameArguments(ARG2='NB_SUSEXP')
+language.renameArguments(ARG3='NB_INFECT')
 #language.renameArguments(ARG4='NB_REMOVE')
-language.renameArguments(ARG2='TRAVELER')
-language.renameArguments(ARG3='AVG_DEGREE')
-language.renameArguments(ARG4='NUM_MITIGAT')
+language.renameArguments(ARG4='TRAVELER')
+language.renameArguments(ARG5='AVG_DEGREE')
+language.renameArguments(ARG6='NUM_MITIGAT')
 #language.renameArguments(ARG7='MITIGATE')
-#language.renameArguments(ARG8='NUM_SUSEXP')
-language.renameArguments(ARG5='NUM_INFECT')
-#language.renameArguments(ARG10='NUM_REMOVE')
+language.renameArguments(ARG7='NUM_SUSEXP')
+language.renameArguments(ARG8='NUM_INFECT')
+language.renameArguments(ARG9='NUM_REMOVE')
 #language.renameArguments(ARG12='AVG_SUSEXP')
 #language.renameArguments(ARG13='AVG_INFECT')
 #language.renameArguments(ARG14='AVG_REMOVE')
-#language.renameArguments(ARG15='ITERATION')
+language.renameArguments(ARG10='ITERATION')
 
 
 # Arithmatic 

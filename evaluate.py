@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.4
+Version:    0.5
 
 
 Change Log:
@@ -19,6 +19,10 @@ Change Log:
     0.4 (July 15, 2020):
         - Added constants for node status
         - Fixed node status issue (had originally swapped exposed and infected)
+
+    0.5 (July 24, 2020):
+        - Commented out useless code for the do_we_mit function
+        - Commented out old code from a previous version that is no longer needed (total infected, max infected)
 
 End Change Log
 
@@ -86,7 +90,7 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
         if i != 0 and i % measure_every == 0:
             # Identify those that are able to hav emitigation applied
             # Remember, we pretend we do not know that exposed are exposed
-            susceptible = get_all_of_status(m)
+            susceptible = get_all_of_status(m, target_status=STATUS_SUSCEPTIBLE)
             exposed = get_all_of_status(m, target_status=STATUS_EXPOSED)
             #infected = get_all_of_status(m, target_status=STATUS_INFECTED)
             susexp = susceptible + exposed
@@ -94,7 +98,7 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
             random.shuffle(susexp)          
 
             
-            num_suscept = get_num_nodes(m)
+            num_suscept = get_num_nodes(m, STATUS_SUSCEPTIBLE)
             num_exposed = get_num_nodes(m, target_status=STATUS_EXPOSED)
             num_susexp = num_suscept + num_exposed
             num_infected = get_num_nodes(m, target_status=STATUS_INFECTED)
@@ -123,25 +127,26 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
                     avg_neighbour_degree = get_avg_neighbour_degree(m, s)
                     neighbour_susexp = get_num_neighbour_status(m, s, target_status=STATUS_SUSCEPTIBLE) + get_num_neighbour_status(m, s, target_status=STATUS_EXPOSED)
                     neighbour_infected = get_num_neighbour_status(m, s, target_status=STATUS_INFECTED) 
-                    neighbour_removed = get_num_neighbour_status(m, s, target_status=STATUS_REMOVED) 
+                    #neighbour_removed = get_num_neighbour_status(m, s, target_status=STATUS_REMOVED) 
                     traveler = is_traveler(traveler_set, s)
                     num_mitigation = mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used)
-                    mitigation = get_cur_mitigations(mitigations_per_measure + rollover_mitigations, mitigations_used)
+                    #mitigation = get_cur_mitigations(mitigations_per_measure + rollover_mitigations, mitigations_used)
 
                     do_we_mitigate = f(
+                                        #node_status,
                                         node_degree,
-                                        #avg_neighbour_degree,
-                                        #neighbour_susexp, 
+                                        avg_neighbour_degree,
+                                        neighbour_susexp, 
                                         neighbour_infected,
                                         #neighbour_removed,
                                         traveler,
                                         avg_degree,
                                         num_mitigation,
                                         #mitigation,
-                                        #num_susexp,
+                                        num_susexp,
                                         num_infected,
-                                        #num_removed,
-                                        #i,
+                                        num_removed,
+                                        i,
                                         )
                     if do_we_mitigate:
                         if node_status == STATUS_SUSCEPTIBLE:
@@ -173,15 +178,15 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
 
             iterations_mitigations.append(mitigations_step)
 
-        current_infected = get_num_nodes(m, target_status=STATUS_INFECTED)
-        total_infected += current_infected
-        max_infected = max(max_infected, current_infected)
+        #current_infected = get_num_nodes(m, target_status=STATUS_INFECTED)
+        #total_infected += current_infected
+        #max_infected = max(max_infected, current_infected)
 
         iterations.append(m.iteration())
         
 
-    final_num_susceptible = get_num_nodes(m)    
-    final_num_removed = get_num_nodes(m, target_status=STATUS_REMOVED)
+    #final_num_susceptible = get_num_nodes(m)    
+    #final_num_removed = get_num_nodes(m, target_status=STATUS_REMOVED)
 
     # Use this between chromosome evals
     # Will reset network with same params

@@ -43,7 +43,7 @@ def setup_gp(language, eval_function, **kwargs):
     toolbox.register("map", futures.map)
 
 
-    creator.create("FitnessMin", base.Fitness, weights=(1,-1))
+    creator.create("FitnessMin", base.Fitness, weights=(-1,))
     creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
 
     toolbox.register("expr", gp.genHalfAndHalf, pset=language, min_=1, max_=4)
