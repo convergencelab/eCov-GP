@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.11
+Version:    0.12
 
 
 Change Log:
@@ -43,8 +43,13 @@ Change Log:
     0.10 (July 22, 2020):
         - Updated alpha to reflect the latent period, NOT a probability
 
-    0.12 (July 29, 2020):
+    0.11 (July 29, 2020):
         - Turn eleitism back on since we are recalculating everyone's fitness anyways
+
+    0.12 (August 17, 2020):
+        - Incorporating shortest dist stuff (new graph measure)
+
+
 
 End Change Log
 
@@ -192,13 +197,13 @@ model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=
 # Identify travelers
 travelers = get_travelers(model)
 average_degree = get_average_degree(model)
-
+shortest_distances = dict(get_shortest_distances_all_nodes(model))
 
 ############
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 
 
 #######################

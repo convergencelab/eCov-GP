@@ -106,6 +106,7 @@ language = gp.PrimitiveSetTyped("MAIN",
                                  float,       # Total number of susceptible and exposed
                                  float,       # Total number of infected
                                  float,       # Total number of removed
+                                 float,     # Shortest distance from susexp node to an infected node
                                  #float,     # Average distance between all susceptible and exposed
                                  #float,     # Average distance between all infected
                                  #float,     # Average distance between all removed 
@@ -127,10 +128,11 @@ language.renameArguments(ARG6='NUM_MITIGAT')
 language.renameArguments(ARG7='NUM_SUSEXP')
 language.renameArguments(ARG8='NUM_INFECT')
 language.renameArguments(ARG9='NUM_REMOVE')
+language.renameArguments(ARG11='SHORT_DIST')
 #language.renameArguments(ARG12='AVG_SUSEXP')
 #language.renameArguments(ARG13='AVG_INFECT')
 #language.renameArguments(ARG14='AVG_REMOVE')
-language.renameArguments(ARG10='ITERATION')
+language.renameArguments(ARG11='ITERATION')
 
 
 # Arithmatic 
@@ -157,7 +159,7 @@ language.addPrimitive(if_then_else, [bool, bool, bool], bool)
 #language.addEphemeralConstant("rand_float", lambda: random.random()*100, float)
 #language.addEphemeralConstant("rand100", lambda: random.random() * 100, float)
 #language.addEphemeralConstant("rand_bool", lambda: True if random.random() < 0.5 else False, bool)
-language.addEphemeralConstant("rand_int", lambda: random.randint(0,30), float)
+language.addEphemeralConstant("rand_int", lambda: random.randint(0,33), float)
 language.addTerminal(False, bool)
 language.addTerminal(True, bool)
 

@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.3
+Version:    0.5
 
 
 Change Log:
@@ -21,6 +21,11 @@ Change Log:
     0.4 (August 10, 2020):
         - Changes average degree of node to only calculate the avg. degree on a single node, not all (way faster) 
 
+    0.5 (August 17, 2020):
+        - Added 
+            - get_shortest_distances_all_nodes
+            - get_shortest_distance
+        - Now we have a way to know how FAR away nodes of a certain type are
 
 End Change Log
 
@@ -52,7 +57,9 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 # Graph Measure Functions #
 ###########################
 
+###################
 # STATIC MEASURES #
+###################
 
 # Find nodes that connect communities
 def get_travelers(model):
@@ -89,8 +96,13 @@ def get_average_degree(model):
 
     return np.average(d)
 
+# Find shortest distance from all nodes to every other node
+def get_shortest_distances_all_nodes(model):
+    return nx.shortest_path_length(model.graph.graph)
 
+########################
 # WHOLE GRAPH MEASURES #
+########################
 
 # Get all nodes of a certain status
 # NOTE: We may want to return those that are susceptible AND exposed
@@ -139,7 +151,9 @@ def get_avg_dist_between_nodes(model, nodes, proportion=1.0):
     # return the average
     return avg
 
-# SINGLE GRAPH MEASUREOUTPUT_DIRECTORY
+########################
+# SINGLE GRAPH MEASURE #
+########################
 
 # current status of node
 def get_status(model, node):
@@ -169,5 +183,14 @@ def get_num_neighbour_status(model, node, target_status=0):
         if model.status[neighbour] == target_status:
             status_count += 1
     return status_count
+
+# Finds the shortest distance from node to a node of a certain type (targets)
+def get_shortest_distance(dists, node, targets):
+    shortest = 9999999    # should do better here
+    for t in targets:
+        if dists[node][t] < shortest:
+            shortest = dists[node][t]
+
+    return shortest
 
 

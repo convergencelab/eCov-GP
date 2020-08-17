@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.5
+Version:    0.6
 
 
 Change Log:
@@ -23,6 +23,9 @@ Change Log:
     0.5 (July 24, 2020):
         - Commented out useless code for the do_we_mit function
         - Commented out old code from a previous version that is no longer needed (total infected, max infected)
+
+    0.6 (August 17, 2020):
+        - Use shortest distance measures
 
 End Change Log
 
@@ -69,7 +72,7 @@ STATUS_MITIGATED = 4
 ######################
    
 # Fitness Function
-def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False):
+def evaluate_individual(f, m, traveler_set, avg_degree=0, short_dist={} , total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False):
 
     max_infected = 0
     total_infected = 0
@@ -92,10 +95,10 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
             # Remember, we pretend we do not know that exposed are exposed
             susceptible = get_all_of_status(m, target_status=STATUS_SUSCEPTIBLE)
             exposed = get_all_of_status(m, target_status=STATUS_EXPOSED)
-            #infected = get_all_of_status(m, target_status=STATUS_INFECTED)
             susexp = susceptible + exposed
             # Shuffle because we have limited resources and don't want any ordering
             random.shuffle(susexp)          
+            infected = get_all_of_status(m, target_status=STATUS_INFECTED)
 
             
             num_suscept = get_num_nodes(m, STATUS_SUSCEPTIBLE)
@@ -132,6 +135,8 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
                     num_mitigation = mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used)
                     #mitigation = get_cur_mitigations(mitigations_per_measure + rollover_mitigations, mitigations_used)
 
+                    s_dist_inf = get_shortest_distance(short_dist, s, infected)
+
                     do_we_mitigate = f(
                                         #node_status,
                                         node_degree,
@@ -146,6 +151,7 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, total_iterations=0, me
                                         num_susexp,
                                         num_infected,
                                         num_removed,
+                                        s_dist_inf,
                                         i,
                                         )
                     if do_we_mitigate:
