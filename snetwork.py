@@ -69,6 +69,7 @@ def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=
             e = random.choice(list(g.edges))
             g.remove_edge(e[0], e[1])
     elif m != None:
+        print("Making BA Graph")
         g = nx.barabasi_albert_graph(size, m)
 
     else:    

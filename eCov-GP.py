@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.10
+Version:    0.11
 
 
 Change Log:
@@ -42,6 +42,9 @@ Change Log:
 
     0.10 (July 22, 2020):
         - Updated alpha to reflect the latent period, NOT a probability
+
+    0.12 (July 29, 2020):
+        - Turn eleitism back on since we are recalculating everyone's fitness anyways
 
 End Change Log
 
@@ -127,16 +130,16 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 50
-GENERATIONS = 50
-CROSSOVER = 0.75
+POPULATION = 500
+GENERATIONS = 500
+CROSSOVER = 0.8
 MUTATION = 0.1
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
 GRAPH_NAME = 'github_notop.dat'
 BETA = 0.050            # Spread Probability
-GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
+GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
@@ -149,10 +152,10 @@ DROP = 1000
 # for BA graph
 M = 9 
 
-ITERATIONS = 91
+ITERATIONS = 77
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 20
-ROLLOVER = True
+MITIGATIONS_PER_MEASURE = 50
+ROLLOVER = False
 ###########
 
 
@@ -170,18 +173,21 @@ def evaluate_population(pop):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
         final_susceptible, max_infected, total_infected, final_removed = evaluate.convert_iterations(fit[0], model)
         total_mitigations, effective_mitigations, ineffective_mitigations = evaluate.convert_iterations_mitigations(fit[1])
-        ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
-
+        #ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
+        ind.fitness.values = (max_infected, )
 
 
 ##################
 # Epidemic Setup #
 ##################
 
-#model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-#model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, drop=DROP, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-model = snetwork.setup_network(size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# ER
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# NWS
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# BA
+#model = snetwork.setu
 
 # Identify travelers
 travelers = get_travelers(model)
@@ -212,20 +218,20 @@ for g in range(GENERATIONS):
     logbook.record(gen=g, **record)
     
     # Elitism
-    #best = toolbox.elitism(population)
-    #best_clone = toolbox.clone(best)
+    best = toolbox.elitism(population)  # For elitism
+    best_clone = toolbox.clone(best)
     
     # Selection
-    #offspring = toolbox.select(population, len(population)-1)
-    offspring = toolbox.select(population, len(population))
+    offspring = toolbox.select(population, len(population)-1)   # For elitism
+    #offspring = toolbox.select(population, len(population))    # for NOT elitism
     offspring_clone = list(map(toolbox.clone, offspring))
         
     # Simplified genetic operators 
     new_population = algorithms.varAnd(offspring_clone, toolbox, CROSSOVER, MUTATION)
 
     # replace the population with the new population
-    #population[:] = best_clone + new_population
-    population[:] = new_population
+    population[:] = best_clone + new_population        # For elitism
+    #population[:] = new_population                     # for NOT elitism
 
     
 print('Ending Evolution')
@@ -251,11 +257,11 @@ results = dict(population=population, logbook=logbook)
 pickle.dump(results, open(os.path.join(RESULTS_DIRECTORY, datetime.datetime.now().strftime("%m-%d-%Y_%H-%M-%S") + '.pkl'),'wb'))
 
 # plot difftrend so it doesn't crash because of SCOOP
-iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(population[0]), m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
-trends = model.build_trends(iterations)
+#iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(population[0]), m=model, traveler_set=travelers, avg_degree=average_degree, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+#trends = model.build_trends(iterations)
 # Visualization
-viz = DiffusionTrend(model, trends)
-viz.plot()
+#viz = DiffusionTrend(model, trends)
+#viz.plot()
 
 # Exit so the SCOOP doesn't try to run again and crash 
 #sys.exit()

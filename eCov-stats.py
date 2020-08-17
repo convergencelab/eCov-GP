@@ -65,35 +65,35 @@ import snetwork
 RESULTS_DIRECTORY = "./function_tests/"
 MEASURE_EVERY = 7
 FUNCTIONS_STATIC = [
-            'mitigation_none_False', 
-            'mitigation_random_False',
-            'mitigation_traveler_False',
+            #'mitigation_none_False', 
+            #'mitigation_random_False',
+            #'mitigation_traveler_False',
             #'mitigation_degree5_False', 
             #'mitigation_degree10_False', 
-            'mitigation_degree15_False',
-            'mitigation_degree20_False',
-            'mitigation_degree25_False', 
-            'mitigation_F1_False',
-            'mitigation_F2_False',
-            'mitigation_F3_False',
-            'mitigation_F4_False',
-            'mitigation_F5_False',
+            #'mitigation_degree15_False',
+            #'mitigation_degree20_False',
+            #'mitigation_degree25_False', 
+            #'mitigation_F1_False',
+            #'mitigation_F2_False',
+            #'mitigation_F3_False',
+            #'mitigation_F4_False',
+            #'mitigation_F5_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 FUNCTIONS_DYNAMIC = [
-            'mitigation_none_True', 
-            'mitigation_random_True',
-            'mitigation_traveler_True',
+            #'mitigation_none_True', 
+            #'mitigation_random_True',
+            #'mitigation_traveler_True',
             #'mitigation_degree5_True', 
             #'mitigation_degree10_True', 
-            'mitigation_degree15_True',
-            'mitigation_degree20_True', 
-            'mitigation_degree25_True', 
+            #'mitigation_degree15_True',
+            #'mitigation_degree20_True', 
+            #'mitigation_degree25_True', 
             'mitigation_F1_True',
-            'mitigation_F2_True',
-            'mitigation_F3_True',
-            'mitigation_F4_True',
-            'mitigation_F5_True',
+            #'mitigation_F2_True',
+            #'mitigation_F3_True',
+            #'mitigation_F4_True',
+            #'mitigation_F5_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 STATUS_SUSCEPTIBLE = 0
@@ -374,10 +374,10 @@ print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_k
 print()
 
 
-d20 = load_data('mitigation_degree20_True')
+#d20 = load_data('mitigation_degree20_True')
 f1 = load_data('mitigation_F1_True')
-f3 = load_data('mitigation_F3_True')
-f5 = load_data('mitigation_F5_True')
+#f3 = load_data('mitigation_F3_True')
+#f5 = load_data('mitigation_F5_True')
 
 a = get_average_trends(*get_all_trends(f1, model))
 #average_epidemic_plot(a, 'Trends: F1')

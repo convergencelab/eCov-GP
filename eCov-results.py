@@ -82,13 +82,13 @@ import snetwork
 
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = ""
-RESULTS_NAME = "07-13-2020_05-51-55.pkl"
+RESULTS_NAME = "08-17-2020_07-40-04.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'
 GRAPH_NAME = 'Graph0_notop.dat'
 BETA = 0.025            # Spread Probability
-GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
+GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
