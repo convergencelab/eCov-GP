@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       July 8, 2020
 
-Version:    0.2
+Version:    0.3
 
 
 Change Log:
@@ -12,7 +12,8 @@ Change Log:
     0.2 (July 22, 2020):
         - Updated alpha to reflect the latent period, NOT a probability
    
-        
+    0.3 (September 1, 2020):
+        - Changed param values to get better graph stats (avg. degree, avg. dist)
 
 End Change Log
 
@@ -44,23 +45,23 @@ import snetwork
 GRAPH_DIRECTORY = './../GRAPHS/Guelph/'
 GRAPH_NAME = 'Graph0_notop.dat'
 
-BETA = 0.05             # Spread Probability (25% works for Wendy graph)
-GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
+BETA = 0.09            # Spread Probability (25% works for Wendy graph)
+GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
-ITERATIONS = 91  
+ITERATIONS = 98  
+GRAPH_SIZE = 500
 
 # For ER graph
-GRAPH_SIZE = 500
-EDGE_p = 0.04
+EDGE_p = 0.016
 
 # For NWS graph
-KNN = 20
+KNN = 10
 REWIRE_p = 0.20
 DROP = 1000
 
 # for BA graph
-M = 9      
+M = 3      
 
       
 # Get the average degree of the graph
@@ -72,18 +73,41 @@ def get_average_degree(model):
 
     return np.average(d), np.min(d), np.max(d)
 
+# Get the average distance between nodes
+def get_average_dist(model):
+    # add all the distances to this list
+    # in the end we will average these values    
+    distances = []
+
+    nodes = list(model.graph.graph.nodes)
+
+    # Only calc the top right triangle of distances
+    for i in range(len(nodes)):
+        for j in range(i+1, len(nodes)):
+            distances.append(nx.shortest_path_length(model.graph.graph, nodes[i], nodes[j]))
+
+    # If there are no distances to take an average of
+    if len(distances) < 1:
+        avg_min_max = 0,0,0
+    else:
+        avg_min_max = (np.average(distances), np.min(distances), np.max(distances))
+
+    # return the average
+    return avg_min_max
+
 
 os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Library\bin\graphviz"
 
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
 #model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 print(get_average_degree(model))
+print(get_average_dist(model))
 
 # List to record network changes throughout simulation
 iterations = []
@@ -98,9 +122,9 @@ viz = DiffusionTrend(model, trends)
 viz.plot()
 
 
-nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
+#nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
 plt.show()
 
-mvc = get_min_vertex_cover(model)
+#mvc = get_min_vertex_cover(model)
 #print(len(mvc))
 

@@ -82,7 +82,7 @@ import snetwork
 
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = ""
-RESULTS_NAME = "08-17-2020_07-40-04.pkl"
+RESULTS_NAME = "08-18-2020_15-29-26.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'

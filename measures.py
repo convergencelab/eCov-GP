@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.5
+Version:    0.6
 
 
 Change Log:
@@ -26,6 +26,9 @@ Change Log:
             - get_shortest_distances_all_nodes
             - get_shortest_distance
         - Now we have a way to know how FAR away nodes of a certain type are
+
+    0.6 (September 1, 2020):
+        - Added average distance to all nodes
 
 End Change Log
 
@@ -98,7 +101,29 @@ def get_average_degree(model):
 
 # Find shortest distance from all nodes to every other node
 def get_shortest_distances_all_nodes(model):
-    return nx.shortest_path_length(model.graph.graph)
+    return dict(nx.shortest_path_length(model.graph.graph))
+
+# Find average distance from all nodes to every other node
+def get_avg_distances_all_nodes(model):
+     # add all the distances to this list
+    # in the end we will average these values    
+    distances = []
+
+    nodes = list(model.graph.graph.nodes)
+
+    # Only calc the top right triangle of distances
+    for i in range(len(nodes)):
+        for j in range(i+1, len(nodes)):
+            distances.append(nx.shortest_path_length(model.graph.graph, nodes[i], nodes[j]))
+
+    # If there are no distances to take an average of
+    if len(distances) < 1:
+        avg = 0
+    else:
+        avg = np.average(distances)
+
+    # return the average
+    return avg
 
 ########################
 # WHOLE GRAPH MEASURES #
@@ -127,7 +152,7 @@ def mitigations_available(total, used):
     return (total - used) > 0
 
 # Average distance between nodes
-def get_avg_dist_between_nodes(model, nodes, proportion=1.0):
+def get_avg_dist_between_nodes(dists, nodes, proportion=1.0):
 
     # Get a random subset of the nodes baseed on the
     # proportion of nodeswe will consider in our sample
@@ -140,7 +165,7 @@ def get_avg_dist_between_nodes(model, nodes, proportion=1.0):
     # Only calc the top right triangle of distances
     for i in range(len(nodes)):
         for j in range(i+1, len(nodes)):
-            distances.append(nx.shortest_path_length(model.graph.graph, nodes[i], nodes[j]))
+            distances.append(dists[nodes[i]][nodes[j]])
 
     # If there are no distances to take an average of
     if len(distances) < 1:

@@ -72,7 +72,7 @@ STATUS_MITIGATED = 4
 ######################
    
 # Fitness Function
-def evaluate_individual(f, m, traveler_set, avg_degree=0, short_dist={} , total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False):
+def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist={} , total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False):
 
     max_infected = 0
     total_infected = 0
@@ -146,6 +146,7 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, short_dist={} , total_
                                         #neighbour_removed,
                                         traveler,
                                         avg_degree,
+                                        avg_dist,
                                         num_mitigation,
                                         #mitigation,
                                         num_susexp,

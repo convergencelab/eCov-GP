@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.12
+Version:    0.13
 
 
 Change Log:
@@ -49,7 +49,8 @@ Change Log:
     0.12 (August 17, 2020):
         - Incorporating shortest dist stuff (new graph measure)
 
-
+    0.13 (September 1, 2020):
+        - Remove the casting as a dict
 
 End Change Log
 
@@ -143,19 +144,23 @@ MUTATION = 0.1
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
 GRAPH_NAME = 'github_notop.dat'
-BETA = 0.050            # Spread Probability
+
+BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
+
 # For ER graph
-EDGE_p = 0.04
+EDGE_p = 0.016
+
 # For NWS graph
-KNN = 20
+KNN = 10
 REWIRE_p = 0.20
 DROP = 1000
+
 # for BA graph
-M = 9 
+M = 3    
 
 ITERATIONS = 77
 MEASURE_EVERY = 7
@@ -178,8 +183,8 @@ def evaluate_population(pop):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
         final_susceptible, max_infected, total_infected, final_removed = evaluate.convert_iterations(fit[0], model)
         total_mitigations, effective_mitigations, ineffective_mitigations = evaluate.convert_iterations_mitigations(fit[1])
-        #ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
-        ind.fitness.values = (max_infected, )
+        ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
+        #ind.fitness.values = (final_susceptible, )
 
 
 ##################
@@ -188,22 +193,23 @@ def evaluate_population(pop):
 
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
 #model = snetwork.setu
 
 # Identify travelers
 travelers = get_travelers(model)
 average_degree = get_average_degree(model)
-shortest_distances = dict(get_shortest_distances_all_nodes(model))
+shortest_distances = get_shortest_distances_all_nodes(model)
+average_distance = get_avg_distances_all_nodes(model)
 
 ############
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
 
 
 #######################

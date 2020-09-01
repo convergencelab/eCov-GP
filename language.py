@@ -101,6 +101,7 @@ language = gp.PrimitiveSetTyped("MAIN",
                                  #float,       # Number of neighbours removed
                                  bool,      # Is traveler
                                  float,     # Average degree of Nodes in Graph
+                                 float,     # Average shortest distance between nodes in Graph
                                  float,       # Number of mitigations available
                                  #bool,      # Is mitigation available
                                  float,       # Total number of susceptible and exposed
@@ -123,16 +124,17 @@ language.renameArguments(ARG3='NB_INFECT')
 #language.renameArguments(ARG4='NB_REMOVE')
 language.renameArguments(ARG4='TRAVELER')
 language.renameArguments(ARG5='AVG_DEGREE')
-language.renameArguments(ARG6='NUM_MITIGAT')
+language.renameArguments(ARG6='AVG_DIST')
+language.renameArguments(ARG7='NUM_MITIGAT')
 #language.renameArguments(ARG7='MITIGATE')
-language.renameArguments(ARG7='NUM_SUSEXP')
-language.renameArguments(ARG8='NUM_INFECT')
-language.renameArguments(ARG9='NUM_REMOVE')
+language.renameArguments(ARG8='NUM_SUSEXP')
+language.renameArguments(ARG9='NUM_INFECT')
+language.renameArguments(ARG10='NUM_REMOVE')
 language.renameArguments(ARG11='SHORT_DIST')
 #language.renameArguments(ARG12='AVG_SUSEXP')
 #language.renameArguments(ARG13='AVG_INFECT')
 #language.renameArguments(ARG14='AVG_REMOVE')
-language.renameArguments(ARG11='ITERATION')
+language.renameArguments(ARG12='ITERATION')
 
 
 # Arithmatic 
