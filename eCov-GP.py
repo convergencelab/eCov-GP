@@ -136,10 +136,10 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 500
-GENERATIONS = 500
+POPULATION = 1000
+GENERATIONS = 1000
 CROSSOVER = 0.8
-MUTATION = 0.1
+MUTATION = 0.15
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../../GRAPHS/'
@@ -148,7 +148,7 @@ GRAPH_NAME = 'github_notop.dat'
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
-INFECTED_0 = 0.01
+INFECTED_0 = 0.02
 GRAPH_SIZE = 500
 
 # For ER graph
@@ -162,9 +162,9 @@ DROP = 1000
 # for BA graph
 M = 3    
 
-ITERATIONS = 77
+ITERATIONS = 98
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 50
+MITIGATIONS_PER_MEASURE = 30
 ROLLOVER = False
 ###########
 
@@ -191,13 +191,13 @@ def evaluate_population(pop):
 # Epidemic Setup #
 ##################
 
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-#model = snetwork.setu
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify travelers
 travelers = get_travelers(model)

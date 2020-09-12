@@ -48,7 +48,7 @@ GRAPH_NAME = 'Graph0_notop.dat'
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
-INFECTED_0 = 0.01
+INFECTED_0 = 0.02
 ITERATIONS = 98  
 GRAPH_SIZE = 500
 
@@ -102,9 +102,9 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 # ER
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 print(get_average_degree(model))
 print(get_average_dist(model))
@@ -125,6 +125,6 @@ viz.plot()
 #nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
 plt.show()
 
-#mvc = get_min_vertex_cover(model)
-#print(len(mvc))
+mvc = get_min_vertex_cover(model)
+print(len(mvc))
 

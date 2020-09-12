@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.9
+Version:    0.11
 
 Change Log:
     0.1: 
@@ -36,6 +36,14 @@ Change Log:
 
     0.9 (July 22, 2020):
         - Updated alpha to reflect the latent period, NOT a probability
+
+    0.10 (September 3, 2020):
+        - Change parameters and model creation
+        - Update to include new static measures (average degree, average distance)
+
+    0.11 (September 12, 2020):
+        - Print average results for fitness
+        - Print arg mins/maxs for fitnesses
 
 End Change Log
 
@@ -82,17 +90,29 @@ import snetwork
 
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = ""
-RESULTS_NAME = "08-18-2020_15-29-26.pkl"
+RESULTS_NAME = "09-11-2020_09-59-20.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'
 GRAPH_NAME = 'Graph0_notop.dat'
-BETA = 0.025            # Spread Probability
+
+BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.01
 GRAPH_SIZE = 500
-EDGE_p = 0.04
+
+# For ER graph
+EDGE_p = 0.016
+
+# For NWS graph
+KNN = 10
+REWIRE_p = 0.20
+DROP = 1000
+
+# for BA graph
+M = 3    
+
 ITERATIONS = 140        
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
@@ -103,12 +123,19 @@ ROLLOVER = True
 ##################
 
 
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# ER
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# NWS
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# BA
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify travelers
 travelers = get_travelers(model)
-
 average_degree = get_average_degree(model)
+shortest_distances = get_shortest_distances_all_nodes(model)
+average_distance = get_avg_distances_all_nodes(model)
 
 ############
 # GP Setup #
@@ -150,12 +177,30 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 #draw_tree(population[0])
 
 
+# List to keep track of all results
+# will print out averages and arg mins
+all_results = []
+
 for i in range(len(population)): 
     print(i, population[i].fitness)
+    all_results.append(list(population[i].fitness.getValues()))
     #draw_tree(population[i])
 
+# Print summary stats
+all_results = np.array(all_results)
 
-
+print()
+print("mean, median")
+print(all_results.mean(axis=0))
+print(np.median(all_results,axis=0))
+print()
+print("min, arg min")
+print(all_results.min(axis=0))
+print(all_results.argmin(axis=0))
+print()
+print("max, arg max")
+print(all_results.max(axis=0))
+print(all_results.argmax(axis=0))
 
 ########################
 # Run on SEIR network  #
