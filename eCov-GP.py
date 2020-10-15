@@ -142,8 +142,8 @@ CROSSOVER = 0.8
 MUTATION = 0.15
 
 # Graph & Disease
-GRAPH_DIRECTORY = './../../GRAPHS/'
-GRAPH_NAME = 'github_notop.dat'
+GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
+GRAPH_NAME = 'nonweightededges_2009_07_15.dat'
 
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
@@ -191,15 +191,15 @@ def evaluate_population(pop):
 # Epidemic Setup #
 ##################
 
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
-# Identify travelers
+# Identify Static Whole Graph Measures
 travelers = get_travelers(model)
 average_degree = get_average_degree(model)
 shortest_distances = get_shortest_distances_all_nodes(model)

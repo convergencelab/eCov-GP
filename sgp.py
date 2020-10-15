@@ -46,7 +46,7 @@ def setup_gp(language, eval_function, **kwargs):
     creator.create("FitnessMin", base.Fitness, weights=(1,-1,-1,-1))
     creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
 
-    toolbox.register("expr", gp.genHalfAndHalf, pset=language, min_=1, max_=4)
+    toolbox.register("expr", gp.genHalfAndHalf, pset=language, min_=1, max_=3)
     toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("compile", gp.compile, pset=language)
@@ -61,8 +61,8 @@ def setup_gp(language, eval_function, **kwargs):
     toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=language)
 
     ## Bloat rules 
-    toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=4))
-    toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=4))
+    toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=3))
+    toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=3))
 
     toolbox.decorate("mate", gp.staticLimit(key=len, max_value=32))
     toolbox.decorate("mutate", gp.staticLimit(key=len, max_value=32))

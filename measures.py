@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.6
+Version:    0.8
 
 
 Change Log:
@@ -29,6 +29,16 @@ Change Log:
 
     0.6 (September 1, 2020):
         - Added average distance to all nodes
+
+    0.7 (September 30, 2020):
+        - Catch key error exception on shortest dist in case graph happens to not be connected. 
+            - If this happens, just ignore that path
+
+    0.8 (October 15, 2020:
+        - Added measures:
+            * Average shortest dist from one node to all other nodes
+            * Number of times a node exists in a path from all nodes to all nodes
+            * Pagerank 
 
 End Change Log
 
@@ -86,7 +96,7 @@ def get_travelers(model):
 
 # Approx minimal vertex cover
 # WARNING: 
-#       - I do not trust this... 
+#       - Most of these graphs have almost all edges in this
 def get_min_vertex_cover(model):
     return appr.min_weighted_vertex_cover(model.graph)
 
@@ -111,10 +121,13 @@ def get_avg_distances_all_nodes(model):
 
     nodes = list(model.graph.graph.nodes)
 
-    # Only calc the top right triangle of distances
+    # Only calc the top right triangle of distances since symetric 
     for i in range(len(nodes)):
         for j in range(i+1, len(nodes)):
-            distances.append(nx.shortest_path_length(model.graph.graph, nodes[i], nodes[j]))
+            try:
+                distances.append(nx.shortest_path_length(model.graph.graph, nodes[i], nodes[j]))
+            except nx.NetworkXNoPath:
+                distances.append(9999999)
 
     # If there are no distances to take an average of
     if len(distances) < 1:
@@ -124,6 +137,62 @@ def get_avg_distances_all_nodes(model):
 
     # return the average
     return avg
+
+
+# Return a list of each node's average shortest
+# path length to all other nodes in the graph
+def get_node_avg_distances_all_nodes(model):
+    average_path_lengths = []
+    paths = dict(nx.shortest_path_length(model.graph.graph))
+    nodes = list(model.graph.graph.nodes)
+
+    for i in range(len(nodes)):
+                
+        node_lengths = []
+        for j in range(0, len(nodes)):
+            try:
+                node_lengths.append(paths[nodes[i]][nodes[j]])
+            except nx.NetworkXNoPath:
+                distances.append(9999999)
+        average_path_lengths.append(np.average(node_lengths))
+
+    return average_path_lengths
+
+
+
+# Find shortest path from all nodes to every other node
+def get_shortest_paths_all_nodes(model):
+    return dict(nx.shortest_path(model.graph.graph))
+
+
+# Number of times each node exists in the 
+# shortest path between any two nodes
+# This does count itself in paths to/from itself
+# For example, 0 is in the shortest path from 0 to X
+def get_node_number_shortest_paths(model):
+    paths = dict(nx.shortest_path(model.graph.graph))
+    nodes = list(model.graph.graph.nodes)
+
+    counts = np.zeros(len(nodes))
+
+    # For each node pair (each)
+    for i in range(nodes):
+        for j in range(nodes):
+            
+            # Iterate over the shortest path
+            # and add the indicies to the counts array
+            for k in len(paths[i][j]):
+                counts[paths[i][j][k]] += 1
+
+    return counts
+    
+# Gets the pagerank
+# Not sure how helpful this will really be
+def get_page_rank(model):
+    return nx.algorithms.link_analysis.pagerank_alg.pagerank(model.graph.graph)
+ 
+
+
 
 ########################
 # WHOLE GRAPH MEASURES #
@@ -213,9 +282,11 @@ def get_num_neighbour_status(model, node, target_status=0):
 def get_shortest_distance(dists, node, targets):
     shortest = 9999999    # should do better here
     for t in targets:
-        if dists[node][t] < shortest:
-            shortest = dists[node][t]
-
+        try:
+            if dists[node][t] < shortest:
+                shortest = dists[node][t]
+        except KeyError:
+                pass        # just do nothing
     return shortest
 
 

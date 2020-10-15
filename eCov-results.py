@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.11
+Version:    0.12
 
 Change Log:
     0.1: 
@@ -44,6 +44,9 @@ Change Log:
     0.11 (September 12, 2020):
         - Print average results for fitness
         - Print arg mins/maxs for fitnesses
+
+    0.11 (September 17, 2020):
+        - Print best 5 for total infected over time metric (this assumes we have this metric as the last element in the objectives)
 
 End Change Log
 
@@ -90,11 +93,11 @@ import snetwork
 
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = ""
-RESULTS_NAME = "09-13-2020_22-00-50.pkl"
+RESULTS_NAME = "09-30-2020_03-44-01.pkl"
 
 # Graph & Disease
-GRAPH_DIRECTORY = './../GRAPHS/KoreaGraphs/'
-GRAPH_NAME = 'Graph0_notop.dat'
+GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
+GRAPH_NAME = 'nonweightededges_2009_07_15.dat'
 
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
@@ -123,15 +126,15 @@ ROLLOVER = True
 ##################
 
 
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
-# Identify travelers and other things
+# Identify Static Whole Graph Measures
 travelers = get_travelers(model)
 average_degree = get_average_degree(model)
 shortest_distances = get_shortest_distances_all_nodes(model)
@@ -194,13 +197,17 @@ print("mean, median")
 print(all_results.mean(axis=0))
 print(np.median(all_results,axis=0))
 print()
+
 print("min, arg min")
 print(all_results.min(axis=0))
 print(all_results.argmin(axis=0))
+print("Best 5", np.argsort(all_results[:,-1])[:5])
+
 print()
 print("max, arg max")
 print(all_results.max(axis=0))
 print(all_results.argmax(axis=0))
+print("Best 5", np.argsort(all_results[:,-1])[-6:])
 
 ########################
 # Run on SEIR network  #

@@ -11,7 +11,15 @@ Change Log:
 
     0.2 (July 22, 2020):
         - Updated alpha to reflect the latent period, NOT a probability
-    
+
+    0.3 (September 30, 2020):
+        - Change all params
+        - Added code for easy comment/uncomment graph types
+
+    0.4 (October 9, 2020):
+        - Made it loop to do Static and Dynamic on the same run
+        - Made it loop to do each function 
+
 End Change Log
 
 Generate a collection of results for a given function. This will be used to generate statistics to really evaluate the strategy effectivness.
@@ -38,24 +46,40 @@ import strategies
 ###########
 
 # Graph & Disease
-GRAPH_DIRECTORY = './../../GRAPHS/'
-GRAPH_NAME = 'github_notop.dat'
-BETA = 0.025            # Spread Probability
-GAMMA = 0.133           # Incubation Probability. Based on 7 day, from sources
+GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
+GRAPH_NAME = 'nonweightededges_2009_07_15.dat'
+GRAPH_TYPE = "DB15"
+
+BETA = 0.09            # Spread Probability (25% works for Wendy graph)
+GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
-INFECTED_0 = 0.01
+INFECTED_0 = 0.02
 GRAPH_SIZE = 500
-EDGE_p = 0.04
-ITERATIONS = 140        
+
+# For ER graph
+EDGE_p = 0.016
+
+# For NWS graph
+KNN = 10
+REWIRE_p = 0.20
+DROP = 1000
+
+# for BA graph
+M = 3    
+
+ITERATIONS = 98
 MEASURE_EVERY = 7
-MITIGATIONS_PER_MEASURE = 20
-ROLLOVER = True
+MITIGATIONS_PER_MEASURE = 30
+ROLLOVER = False
+###########
 
 # Testing Params
 OUTPUT_DIRECTORY = "./function_tests/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
-FUNCTION = strategies.mitigation_F1       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
+functions = [strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10]
 
 ###########
 
@@ -64,54 +88,82 @@ FUNCTION = strategies.mitigation_F1       # CHANGE ME FOR SWITCHING OUT FUNCTION
 # Run Tests #
 #############
 
-print("Function Being Tested:\t", FUNCTION.__name__)
-print("Dynamic Graph Topology:\t", CHANGE_TOPOLOGY)
 
-all_iterations = []
-all_iterations_mitigations = []
+for topology in [False, True]:
+    CHANGE_TOPOLOGY = topology
 
-all_trends = []
-all_trends_mitigations = []
+    for strat in functions:
+        FUNCTION = strat
 
 
-print('Beginning Testing')
+        print("Function Being Tested:\t", FUNCTION.__name__)
+        print("Dynamic Graph Topology:\t", CHANGE_TOPOLOGY)
 
-for i in range(N):
+        all_iterations = []
+        all_iterations_mitigations = []
 
-    # Reporting
-    if i % (0.1 * N) == 0:
-        print(i/N)
+        all_trends = []
+        all_trends_mitigations = []
 
-    # If this is the first run OR we want to change the topology all the time
-    if i == 0 or CHANGE_TOPOLOGY:
+
+        print('Beginning Testing')
+
+        for i in range(N):
+
+            # Reporting
+            if i % (0.1 * N) == 0:
+                print(i/N)
+
+            # If this is the first run OR we want to change the topology all the time
+            if i == 0 or CHANGE_TOPOLOGY:
+            
+                #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                
+                # ER
+                #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                #GRAPH_TYPE = "ER"
+               
+                # NWS
+                #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                #GRAPH_TYPE = "NWS"
+
+                # BA
+                model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                GRAPH_TYPE = "BA"
+
+                # Identify Static Whole Graph Measures
+                travelers = get_travelers(model)
+                average_degree = get_average_degree(model)
+                shortest_distances = get_shortest_distances_all_nodes(model)
+                average_distance = get_avg_distances_all_nodes(model)
+
+
+            # Evaluate the function
+            iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+
+            # Bookkeeping
+            all_iterations.append(iterations)
+            all_iterations_mitigations.append(iterations_mitigations)
+            
+            #all_trends.append(model.build_trends(iterations))   
+            #all_trends_mitigations.append(evaluate.mitigation_trends(iterations_mitigations))    
+
+            
+
+
+        ################
+        # Save Results #
+        ################
+
+        print('Saving Results')
+
+        pickle.dump((all_iterations, all_iterations_mitigations), open(os.path.join(OUTPUT_DIRECTORY, FUNCTION.__name__ + '_' + GRAPH_TYPE  + '_' + str(CHANGE_TOPOLOGY)+'.pkl'),'wb'))
+
+    # Quick hack to not run true on real graph
+    if GRAPH_TYPE == "DB15":
+        break
+
     
-        #print("\tMaking New Graph")
-        model = snetwork.setup_network(size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-
-        # Identify travelers
-        travelers = get_travelers(model)
-
-
-    # Evaluate the function
-    iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
-
-    # Bookkeeping
-    all_iterations.append(iterations)
-    all_iterations_mitigations.append(iterations_mitigations)
-    
-    #all_trends.append(model.build_trends(iterations))   
-    #all_trends_mitigations.append(evaluate.mitigation_trends(iterations_mitigations))    
-
-    
-
-
-################
-# Save Results #
-################
-
-print('Saving Results')
-
-pickle.dump((all_iterations, all_iterations_mitigations), open(os.path.join(OUTPUT_DIRECTORY, FUNCTION.__name__ + '_' + str(CHANGE_TOPOLOGY) +'.pkl'),'wb'))
 
 
 

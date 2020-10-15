@@ -42,8 +42,8 @@ import sgp
 import snetwork
 
 # Graph & Disease
-GRAPH_DIRECTORY = './../GRAPHS/Guelph/'
-GRAPH_NAME = 'Graph0_notop.dat'
+GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
+GRAPH_NAME = 'nonweightededges_2009_05_03.dat'
 
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
@@ -100,14 +100,20 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
-#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
-print(get_average_degree(model))
-print(get_average_dist(model))
+print(len(model.graph.graph.nodes))
+print(len(model.graph.graph.edges))
+
+avg_degree = get_average_degree(model)
+print(avg_degree)
+dist = get_average_dist(model)
+print(dist)
+
 
 # List to record network changes throughout simulation
 iterations = []
@@ -119,11 +125,11 @@ for i in range(ITERATIONS):
 # See curves
 trends = model.build_trends(iterations)
 viz = DiffusionTrend(model, trends)
-viz.plot()
+#viz.plot()
 
 
 #nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
-plt.show()
+#plt.show()
 
 mvc = get_min_vertex_cover(model)
 print(len(mvc))

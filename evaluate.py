@@ -146,14 +146,14 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist
                                         #neighbour_removed,
                                         traveler,
                                         avg_degree,
-                                        avg_dist,
-                                        num_mitigation,
+                                        #avg_dist,
+                                        #num_mitigation,
                                         #mitigation,
                                         num_susexp,
                                         num_infected,
                                         num_removed,
-                                        s_dist_inf,
-                                        i,
+                                        #s_dist_inf,
+                                        #i,
                                         )
                     if do_we_mitigate:
                         if node_status == STATUS_SUSCEPTIBLE:
