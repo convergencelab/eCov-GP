@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 11, 2020
 
-Version:    0.2
+Version:    0.5
 
 
 Change Log:
@@ -19,6 +19,9 @@ Change Log:
     0.4 (October 9, 2020):
         - Made it loop to do Static and Dynamic on the same run
         - Made it loop to do each function 
+
+    0.5 (October 22, 2020):
+        - Small change to include use all option in evaluation/mitigation strategy
 
 End Change Log
 
@@ -71,15 +74,16 @@ ITERATIONS = 98
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 30
 ROLLOVER = False
+USE_ALL = False
 ###########
 
 # Testing Params
-OUTPUT_DIRECTORY = "./function_tests/"
+OUTPUT_DIRECTORY = "./function_tests_use_all/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
-functions = [strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10]
+functions = [strategies.mitigation_none, strategies.mitigation_random, strategies.mitigation_traveler, strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10, strategies.mitigation_all_F1]
 
 ###########
 
@@ -90,6 +94,7 @@ functions = [strategies.mitigation_degree5, strategies.mitigation_degree6, strat
 
 
 for topology in [False, True]:
+#for topology in [False]:
     CHANGE_TOPOLOGY = topology
 
     for strat in functions:
@@ -139,7 +144,7 @@ for topology in [False, True]:
 
 
             # Evaluate the function
-            iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+            iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
 
             # Bookkeeping
             all_iterations.append(iterations)

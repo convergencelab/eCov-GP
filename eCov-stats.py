@@ -64,37 +64,107 @@ import snetwork
 
 RESULTS_DIRECTORY = "./function_tests/"
 MEASURE_EVERY = 7
-FUNCTIONS_STATIC = [
-            #'mitigation_none_False', 
-            #'mitigation_random_False',
-            #'mitigation_traveler_False',
-            #'mitigation_degree5_False', 
-            #'mitigation_degree10_False', 
-            #'mitigation_degree15_False',
-            #'mitigation_degree20_False',
-            #'mitigation_degree25_False', 
-            #'mitigation_F1_False',
-            #'mitigation_F2_False',
-            #'mitigation_F3_False',
-            #'mitigation_F4_False',
-            #'mitigation_F5_False',
+# ER
+FUNCTIONS_STATIC_ER = [
+            'mitigation_none_ER_False',
+            'mitigation_random_ER_False',
+            'mitigation_traveler_ER_False',
+            'mitigation_degree5_ER_False',
+            'mitigation_degree6_ER_False',
+            'mitigation_degree7_ER_False',
+            'mitigation_degree8_ER_False',
+            'mitigation_degree9_ER_False',
+            'mitigation_degree10_ER_False',
+            'mitigation_all_F1_ER_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
-FUNCTIONS_DYNAMIC = [
-            #'mitigation_none_True', 
-            #'mitigation_random_True',
-            #'mitigation_traveler_True',
-            #'mitigation_degree5_True', 
-            #'mitigation_degree10_True', 
-            #'mitigation_degree15_True',
-            #'mitigation_degree20_True', 
-            #'mitigation_degree25_True', 
-            'mitigation_F1_True',
-            #'mitigation_F2_True',
-            #'mitigation_F3_True',
-            #'mitigation_F4_True',
-            #'mitigation_F5_True',
+
+FUNCTIONS_NONSTATIC_ER = [
+            'mitigation_none_ER_True',
+            'mitigation_random_ER_True',
+            'mitigation_traveler_ER_True',
+            'mitigation_degree5_ER_True',
+            'mitigation_degree6_ER_True',
+            'mitigation_degree7_ER_True',
+            'mitigation_degree8_ER_True',
+            'mitigation_degree9_ER_True',
+            'mitigation_degree10_ER_True',
+            'mitigation_all_F1_ER_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
+
+# NWS
+FUNCTIONS_STATIC_NWS = [
+            'mitigation_none_NWS_False',
+            'mitigation_random_NWS_False',
+            'mitigation_traveler_NWS_False',
+            'mitigation_degree5_NWS_False',
+            'mitigation_degree6_NWS_False',
+            'mitigation_degree7_NWS_False',
+            'mitigation_degree8_NWS_False',
+            'mitigation_degree9_NWS_False',
+            'mitigation_degree10_NWS_False',
+            'mitigation_all_F1_NWS_False',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
+
+FUNCTIONS_NONSTATIC_NWS = [
+            'mitigation_none_NWS_True',
+            'mitigation_random_NWS_True',
+            'mitigation_traveler_NWS_True',
+            'mitigation_degree5_NWS_True',
+            'mitigation_degree6_NWS_True',
+            'mitigation_degree7_NWS_True',
+            'mitigation_degree8_NWS_True',
+            'mitigation_degree9_NWS_True',
+            'mitigation_degree10_NWS_True',
+            'mitigation_all_F1_NWS_True',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
+
+# BA
+FUNCTIONS_STATIC_BA = [
+            'mitigation_none_BA_False',
+            'mitigation_random_BA_False',
+            'mitigation_traveler_BA_False',
+            'mitigation_degree5_BA_False',
+            'mitigation_degree6_BA_False',
+            'mitigation_degree7_BA_False',
+            'mitigation_degree8_BA_False',
+            'mitigation_degree9_BA_False',
+            'mitigation_degree10_BA_False',
+            'mitigation_all_F1_BA_False',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
+
+FUNCTIONS_NONSTATIC_BA = [
+            'mitigation_none_BA_True',
+            'mitigation_random_BA_True',
+            'mitigation_traveler_BA_True',
+            'mitigation_degree5_BA_True',
+            'mitigation_degree6_BA_True',
+            'mitigation_degree7_BA_True',
+            'mitigation_degree8_BA_True',
+            'mitigation_degree9_BA_True',
+            'mitigation_degree10_BA_True',
+            'mitigation_all_F1_BA_True',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
+
+# DUB15
+FUNCTIONS_STATIC_DB15 = [
+            'mitigation_none_DB15_False',
+            'mitigation_random_DB15_False',
+            'mitigation_traveler_DB15_False',
+            'mitigation_degree5_DB15_False',
+            'mitigation_degree6_DB15_False',
+            'mitigation_degree7_DB15_False',
+            'mitigation_degree8_DB15_False',
+            'mitigation_degree9_DB15_False',
+            'mitigation_degree10_DB15_False',
+            'mitigation_all_F1_DB15_False',
+            ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+
 
 STATUS_SUSCEPTIBLE = 0
 STATUS_EXPOSED = 2
@@ -364,28 +434,28 @@ measure_keys = ['susceptible',
         'mitigation_effective', 
         'mitigation_ineffective']
 
-print(generate_summary_statistic_table(FUNCTIONS_STATIC, model, measure_keys))
+print(generate_summary_statistic_table(FUNCTIONS_STATIC_DB15, model, measure_keys))
 print()
 
-print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
-print()
+#print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
+#print()
 
-print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
-print()
+#print(generate_p_val_table(FUNCTIONS_STATIC, FUNCTIONS_DYNAMIC, model, measure_keys))
+#print()
 
 
 #d20 = load_data('mitigation_degree20_True')
-f1 = load_data('mitigation_F1_True')
+#f1 = load_data('mitigation_F1_True')
 #f3 = load_data('mitigation_F3_True')
 #f5 = load_data('mitigation_F5_True')
 
-a = get_average_trends(*get_all_trends(f1, model))
+#a = get_average_trends(*get_all_trends(f1, model))
 #average_epidemic_plot(a, 'Trends: F1')
 
-generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Susceptible', 'susceptible', model)
-generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Max Infected', 'max_infected', model)
-generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Total Infected', 'total_infected', model)
-generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Mitigations', 'mitigation', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Susceptible', 'susceptible', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Max Infected', 'max_infected', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Total Infected', 'total_infected', model)
+#generate_p_val_matrix(FUNCTIONS_DYNAMIC, ['Degree 20', 'F1', 'F3', 'F5'], [4, 6, 8, 10], 'Mitigations', 'mitigation', model)
 
 '''
 f1_m = get_single_measures(load_data(FUNCTIONS_DYNAMIC[6]), model)

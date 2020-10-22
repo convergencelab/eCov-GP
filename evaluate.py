@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.6
+Version:    0.7
 
 
 Change Log:
@@ -26,6 +26,11 @@ Change Log:
 
     0.6 (August 17, 2020):
         - Use shortest distance measures
+
+    0.7 (October 22, 2020):
+        - Allow the system to apply a backup mitigation strategy if we have leftover mitigations
+        - Default rule is to randomy apply (first come first serve), but can pass arbitrary function
+        - This will be handy when doing the tests (eCov-test) because we will have a bunch of functions
 
 End Change Log
 
@@ -67,12 +72,30 @@ STATUS_REMOVED = 3
 STATUS_MITIGATED = 4
 
 
+# default use all function is just random
+def default_use_all(avg_neighbour_degree,
+                        neighbour_susexp, 
+                        neighbour_infected,
+                        #neighbour_removed,
+                        traveler,
+                        avg_degree,
+                        #num_mitigation,
+                        #mitigation,
+                        num_susexp,
+                        num_infected,
+                        num_removed,
+                        #i,
+                        ):
+    return True
+
+
+
 ######################
 # Fitness Evaluation #
 ######################
    
 # Fitness Function
-def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist={} , total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False):
+def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist={} , total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False, use_all=False, use_all_function=default_use_all):
 
     max_infected = 0
     total_infected = 0
@@ -169,10 +192,84 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist
                 else:
                     break
 
-            # If we are rolloigover
+            ########################################################
+            # Make it so have an option to use all the mitigations
+            if use_all:
+                # Basically repeat above with the given strategy
+                # but figure out suscept again since they could've changed
+                #
+                susceptible = get_all_of_status(m, target_status=STATUS_SUSCEPTIBLE)
+                susexp = susceptible + exposed
+                # Shuffle because we have limited resources and don't want any ordering
+                random.shuffle(susexp)     
+
+                # These numbers may have changed too
+                num_suscept = get_num_nodes(m, STATUS_SUSCEPTIBLE)
+                num_susexp = num_suscept + num_exposed
+                num_removed = get_num_nodes(m, target_status=STATUS_REMOVED)
+
+                # Evaluate nodes
+                # Only consider susceptible and exposed currently
+                # In future, we could consider infected and do neighbour/ring mitigation
+                for s in susexp:
+                    
+                    if mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used):
+                        node_status = get_status(m, s)
+                        node_degree = get_degree(m, s)
+                        avg_neighbour_degree = get_avg_neighbour_degree(m, s)
+                        neighbour_susexp = get_num_neighbour_status(m, s, target_status=STATUS_SUSCEPTIBLE) + get_num_neighbour_status(m, s, target_status=STATUS_EXPOSED)
+                        neighbour_infected = get_num_neighbour_status(m, s, target_status=STATUS_INFECTED) 
+                        #neighbour_removed = get_num_neighbour_status(m, s, target_status=STATUS_REMOVED) 
+                        traveler = is_traveler(traveler_set, s)
+                        num_mitigation = mitigations_available(mitigations_per_measure + rollover_mitigations, mitigations_used)
+                        #mitigation = get_cur_mitigations(mitigations_per_measure + rollover_mitigations, mitigations_used)
+
+                        s_dist_inf = get_shortest_distance(short_dist, s, infected)
+
+                        do_we_mitigate = use_all_function(
+                                            #node_status,
+                                            node_degree,
+                                            avg_neighbour_degree,
+                                            neighbour_susexp, 
+                                            neighbour_infected,
+                                            #neighbour_removed,
+                                            traveler,
+                                            avg_degree,
+                                            #avg_dist,
+                                            #num_mitigation,
+                                            #mitigation,
+                                            num_susexp,
+                                            num_infected,
+                                            num_removed,
+                                            #s_dist_inf,
+                                            #i,
+                                            )
+                        if do_we_mitigate:
+                            if node_status == STATUS_SUSCEPTIBLE:
+                                cur_num_mitigated = mitigate_self(m, s)
+                                mitigations_used += cur_num_mitigated
+                                mitigations_used_effective += cur_num_mitigated
+                                mitigations_step['status'][s] = STATUS_MITIGATED
+
+                            # Apply mitigation to exposed, but this wastes mitigation                        
+                            else:
+                                mitigations_used += 1
+                           
+                    else:
+                        break
+            #############################################
+
+
+            # If we are rolloig over
+            # Rollover should be after the use_all 
+            # since the backup strategy may have leftovers
             if rollover:
                 # rollovers can accumulate over multiple periods
                 rollover_mitigations = (mitigations_per_measure + rollover_mitigations) - mitigations_used
+
+
+
+
 
             total_mitigation += mitigations_used
             total_mitigation_effective += mitigations_used_effective
@@ -257,6 +354,7 @@ def convert_iterations_mitigations(iterations_mitigations):
     ineffective = trends[0]['trends']['node_count']['ineffective'][-1]
     
     return total, effective, ineffective, 
+
 
 
 
