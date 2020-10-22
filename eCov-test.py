@@ -22,6 +22,7 @@ Change Log:
 
     0.5 (October 22, 2020):
         - Small change to include use all option in evaluation/mitigation strategy
+        - WARNING: BE CAREFUL WHEN RUNNING NONE AS IT WILL JUST BE THE SECONDARY FUNCTION
 
 End Change Log
 
@@ -74,16 +75,17 @@ ITERATIONS = 98
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 30
 ROLLOVER = False
-USE_ALL = False
+USE_ALL = True              ###########
 ###########
 
 # Testing Params
 OUTPUT_DIRECTORY = "./function_tests_use_all/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
-FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
+#FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
-functions = [strategies.mitigation_none, strategies.mitigation_random, strategies.mitigation_traveler, strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10, strategies.mitigation_all_F1]
+#functions = [strategies.mitigation_none, strategies.mitigation_random, strategies.mitigation_traveler, strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10, strategies.mitigation_all_F1]
+functions = [strategies.mitigation_none]
 
 ###########
 
@@ -144,7 +146,12 @@ for topology in [False, True]:
 
 
             # Evaluate the function
-            iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
+            # If we are doing the non mitigation 
+            # we must not do a secondary strategy
+            if FUNCTION.__name__ != "mitigation_none":
+                iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
+            else:
+                iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=False)
 
             # Bookkeeping
             all_iterations.append(iterations)

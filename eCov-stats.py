@@ -62,7 +62,11 @@ import snetwork
 # PARAMS  #
 ###########
 
-RESULTS_DIRECTORY = "./function_tests/"
+# Use for simple
+#RESULTS_DIRECTORY = "./function_tests/"
+# Use for the use all/secondary strategy
+RESULTS_DIRECTORY = "./function_tests_use_all/"
+
 MEASURE_EVERY = 7
 # ER
 FUNCTIONS_STATIC_ER = [

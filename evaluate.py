@@ -73,7 +73,8 @@ STATUS_MITIGATED = 4
 
 
 # default use all function is just random
-def default_use_all(avg_neighbour_degree,
+def default_use_all(node_degree,
+                        avg_neighbour_degree,
                         neighbour_susexp, 
                         neighbour_infected,
                         #neighbour_removed,
