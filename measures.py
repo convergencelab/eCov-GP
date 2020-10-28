@@ -169,6 +169,8 @@ def get_shortest_paths_all_nodes(model):
 # shortest path between any two nodes
 # This does count itself in paths to/from itself
 # For example, 0 is in the shortest path from 0 to X
+# WARNING, I THINK THIS ONLY CONSIDERS ONE PATH IF MORE THAN 
+#  ONE SHORTEST PATH EXISTS!!!!!!!
 def get_node_number_shortest_paths(model):
     paths = dict(nx.shortest_path(model.graph.graph))
     nodes = list(model.graph.graph.nodes)
@@ -190,7 +192,6 @@ def get_node_number_shortest_paths(model):
 # Not sure how helpful this will really be
 def get_page_rank(model):
     return nx.algorithms.link_analysis.pagerank_alg.pagerank(model.graph.graph)
- 
 
 
 

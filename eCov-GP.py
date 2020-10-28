@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.13
+Version:    0.14
 
 
 Change Log:
@@ -52,8 +52,13 @@ Change Log:
     0.13 (September 1, 2020):
         - Remove the casting as a dict
 
+    0.14 (October 26, 2020):
+        - Added the use all flag to make it so we use the secondary strategy
+
 End Change Log
 
+
+Run with this: ipython -m scoop eCov-GP.py
 
 
 A GP search for effective vaccination strategies for a given graph
@@ -93,6 +98,8 @@ This version is relatively simple:
 I think to start the trees will simply be a boolean expression. If true, vac, otherwise, no. 
 
 '''
+
+# Can use this ipython -m scoop eCov-GP.py
 
 ###########
 # Imports #
@@ -145,10 +152,15 @@ MUTATION = 0.15
 GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
 GRAPH_NAME = 'nonweightededges_2009_07_15.dat'
 
+# SEIR Params
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.02
+
+#############################
+# RANDOM GRAPH PARAMS BELOW #
+#############################
 GRAPH_SIZE = 500
 
 # For ER graph
@@ -161,11 +173,13 @@ DROP = 1000
 
 # for BA graph
 M = 3    
+#############################
 
 ITERATIONS = 98
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 30
 ROLLOVER = False
+USE_ALL = False
 ###########
 
 
@@ -191,6 +205,7 @@ def evaluate_population(pop):
 # Epidemic Setup #
 ##################
 
+# Load custom graph
 model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
@@ -209,7 +224,7 @@ average_distance = get_avg_distances_all_nodes(model)
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
 
 
 #######################

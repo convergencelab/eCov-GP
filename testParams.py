@@ -53,7 +53,7 @@ ITERATIONS = 98
 GRAPH_SIZE = 500
 
 # For ER graph
-EDGE_p = 0.016
+EDGE_p = 0.017
 
 # For NWS graph
 KNN = 10
@@ -100,11 +100,11 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 print(len(model.graph.graph.nodes))
 print(len(model.graph.graph.edges))
@@ -114,7 +114,7 @@ print(avg_degree)
 dist = get_average_dist(model)
 print(dist)
 
-
+'''
 # List to record network changes throughout simulation
 iterations = []
 
@@ -127,10 +127,10 @@ trends = model.build_trends(iterations)
 viz = DiffusionTrend(model, trends)
 #viz.plot()
 
-
+'''
 #nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
 #plt.show()
-
+'''
 mvc = get_min_vertex_cover(model)
 print(len(mvc))
-
+'''

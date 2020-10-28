@@ -1,32 +1,17 @@
 '''
 Author:     James Hughes
-Date:       June 11, 2020
+Date:       October 28, 2020
 
-Version:    0.5
+Version:    0.1
 
 
 Change Log:
-    0.1 (June 11, 2020): 
+    0.1 (October 28, 2020): 
         - Initial version.
-
-    0.2 (July 22, 2020):
-        - Updated alpha to reflect the latent period, NOT a probability
-
-    0.3 (September 30, 2020):
-        - Change all params
-        - Added code for easy comment/uncomment graph types
-
-    0.4 (October 9, 2020):
-        - Made it loop to do Static and Dynamic on the same run
-        - Made it loop to do each function 
-
-    0.5 (October 22, 2020):
-        - Small change to include use all option in evaluation/mitigation strategy
-        - WARNING: BE CAREFUL WHEN RUNNING NONE AS IT WILL JUST BE THE SECONDARY FUNCTION
 
 End Change Log
 
-Generate a collection of results for a given function. This will be used to generate statistics to really evaluate the strategy effectivness.
+Similar to eCov-test, but this one will keep going and increase the connected-ness of the graphs. 
 
 '''
 
@@ -52,7 +37,7 @@ import strategies
 # Graph & Disease
 GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
 GRAPH_NAME = 'nonweightededges_2009_07_15.dat'
-GRAPH_TYPE = "DB15"
+#GRAPH_TYPE = "DB15"
 
 BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
@@ -81,7 +66,7 @@ USE_ALL = False              ###########
 ###########
 
 # Testing Params
-OUTPUT_DIRECTORY = "./function_tests_use_all/"
+OUTPUT_DIRECTORY = "./function_tests_break/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 #FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
@@ -97,17 +82,21 @@ functions = [strategies.mitigation_all_F1]
 # Run Tests #
 #############
 
+# change this
+increases = EDGE_ps
+#increases = DROPs
+#increases = Ms
 
-for topology in [False, True]:
-#for topology in [False]:
-    CHANGE_TOPOLOGY = topology
+for value in increases:
+
+    
 
     for strat in functions:
         FUNCTION = strat
 
-
         print("Function Being Tested:\t", FUNCTION.__name__)
         print("N Graph Topology:\t", CHANGE_TOPOLOGY)
+        print("Break Value:\t", value)
 
         all_iterations = []
         all_iterations_mitigations = []
@@ -130,16 +119,16 @@ for topology in [False, True]:
                 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
                 
                 # ER
-                #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-                #GRAPH_TYPE = "ER"
+                model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=value, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                GRAPH_TYPE = "ER"
                
                 # NWS
-                #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=value, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
                 #GRAPH_TYPE = "NWS"
 
                 # BA
-                model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-                GRAPH_TYPE = "BA"
+                #model = snetwork.setup_network(size=GRAPH_SIZE, m=value, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                #GRAPH_TYPE = "BA"
 
                 # Identify Static Whole Graph Measures
                 travelers = get_travelers(model)
@@ -172,7 +161,7 @@ for topology in [False, True]:
 
         print('Saving Results')
 
-        pickle.dump((all_iterations, all_iterations_mitigations), open(os.path.join(OUTPUT_DIRECTORY, FUNCTION.__name__ + '_' + GRAPH_TYPE  + '_' + str(CHANGE_TOPOLOGY)+'.pkl'),'wb'))
+        pickle.dump((all_iterations, all_iterations_mitigations), open(os.path.join(OUTPUT_DIRECTORY, FUNCTION.__name__ + '_' + GRAPH_TYPE  + '_' + str(value) + '_' + str(CHANGE_TOPOLOGY)+'.pkl'),'wb'))
 
     # Quick hack to not run true on real graph
     if GRAPH_TYPE == "DB15":

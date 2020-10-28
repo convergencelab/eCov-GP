@@ -42,7 +42,10 @@ def setup_gp(language, eval_function, **kwargs):
     from scoop import futures
     toolbox.register("map", futures.map)
 
-
+    
+    # CHANGE ME FOR CHANGING OPTIMIZATION CRITERIA
+    # SPECIFICALLY, weights=(x,y,z,...)
+    # if you want single objective, it must be a tuple, namely, weights=(1,)
     creator.create("FitnessMin", base.Fitness, weights=(1,-1,-1,-1))
     creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMin)
 

@@ -83,6 +83,7 @@ def mitigate_neighbours(model, node, mitigation_available):
 def if_then_else(in1, out1, out2):
     return out1 if in1 else out2
 
+
 def protectedDiv(a, b):
     try:
         q = a / b
