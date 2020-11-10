@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 8, 2020
 
-Version:    0.8
+Version:    0.9
 
 
 Change Log:
@@ -34,11 +34,14 @@ Change Log:
         - Catch key error exception on shortest dist in case graph happens to not be connected. 
             - If this happens, just ignore that path
 
-    0.8 (October 15, 2020:
+    0.8 (October 15, 2020):
         - Added measures:
             * Average shortest dist from one node to all other nodes
             * Number of times a node exists in a path from all nodes to all nodes
             * Pagerank 
+
+    0.9 (November 10, 2020):
+        - Added clustering coefficient measure
 
 End Change Log
 
@@ -194,6 +197,9 @@ def get_page_rank(model):
     return nx.algorithms.link_analysis.pagerank_alg.pagerank(model.graph.graph)
 
 
+# Get the nodes' clustering coefficient
+def clustering_coefficient(model)
+    return nx.algorithms.cluster.clustering(model.graph.graph)
 
 ########################
 # WHOLE GRAPH MEASURES #
