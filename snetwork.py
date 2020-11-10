@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 9, 2020
 
-Version:    0.5
+Version:    0.6
 
 
 Change Log:
@@ -23,6 +23,12 @@ Change Log:
         - Added the ability to use Barabasi-Albert graph
         - Done because it seems to popular 
         - http://www-math.mit.edu/~apost/courses/18.204_2018/Lee_Bernick_paper.pdf
+
+    0.6 (November 10, 2020):
+        - Added Powerlaw Cluster Graph
+            - https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.powerlaw_cluster_graph.html#networkx.generators.random_graphs.powerlaw_cluster_graph
+        - Kinda' like a BA graph, but makes it cluster
+
 
 End Change Log
 
@@ -51,7 +57,7 @@ from ndlib.viz.mpl.DiffusionPrevalence import DiffusionPrevalence
 # Epidemic Setup #
 ##################
 
-def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=None, edge_p=None, knn=None, rewire_p=None, drop=None, m=None):
+def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=None, edge_p=None, knn=None, rewire_p=None, drop=None, m=None, n_edges=None, triangle_p=None):
 
     # Network topology
     
@@ -68,9 +74,14 @@ def setup_network(alpha, beta, gamma, infected, directory=None, name=None, size=
         for i in range(drop):
             e = random.choice(list(g.edges))
             g.remove_edge(e[0], e[1])
+
     elif m != None:
         print("Making BA Graph")
         g = nx.barabasi_albert_graph(size, m)
+
+    elif triangle_p != None:
+        print("Making Powerlaw Cluster Graph")
+        g = nx.powerlaw_cluster_graph(n=size, m=n_edges, p=triangle_p)
 
     else:    
         print("Loading custom Graph")

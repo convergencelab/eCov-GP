@@ -49,20 +49,25 @@ BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.02
-ITERATIONS = 98  
+ITERATIONS = 98 
+ 
 GRAPH_SIZE = 500
 
 # For ER graph
-EDGE_p = 0.017
+EDGE_p = 0.016
 
 # For NWS graph
 KNN = 10
 REWIRE_p = 0.20
 DROP = 1000
 
-# for BA graph
+# For BA graph
 M = 3      
 
+# For PCG (Powerlaw Cluster Graph)
+
+n_edges = 7
+triangle_p = 0.10
       
 # Get the average degree of the graph
 def get_average_degree(model):
@@ -104,7 +109,11 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
-model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# PCG
+model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=, triangle_p=, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+
+
 
 print(len(model.graph.graph.nodes))
 print(len(model.graph.graph.edges))
