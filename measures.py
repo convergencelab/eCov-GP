@@ -296,4 +296,8 @@ def get_shortest_distance(dists, node, targets):
                 pass        # just do nothing
     return shortest
 
+# Gets the coefficient of a node
+def get_cluster_coefficient(clusterC, node):
+    return clusterC[node]
+
 
