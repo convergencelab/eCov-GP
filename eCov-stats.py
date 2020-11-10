@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 12, 2020
 
-Version:    0.4
+Version:    0.5
 
 
 Change Log:
@@ -23,6 +23,9 @@ Change Log:
     0.4 (July 15, 2020):
         - Added constants for node status
         - Fixed node status issue (had originally swapped exposed and infected)
+
+    0.5 (November 3, 2020):
+        - Added functions to test the 'break' results
 
 End Change Log
 
@@ -65,7 +68,12 @@ import snetwork
 # Use for simple
 #RESULTS_DIRECTORY = "./function_tests/"
 # Use for the use all/secondary strategy
-RESULTS_DIRECTORY = "./function_tests_use_all/"
+#RESULTS_DIRECTORY = "./function_tests_use_all/"
+#RESULTS_DIRECTORY = "./function_tests_break/"
+#RESULTS_DIRECTORY = "./function_tests_use_all_break/"
+#RESULTS_DIRECTORY = "./function_tests_grow/"
+RESULTS_DIRECTORY = "./function_tests_use_all_grow/"
+
 
 MEASURE_EVERY = 7
 # ER
@@ -170,11 +178,14 @@ FUNCTIONS_STATIC_DB15 = [
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
+
+
 STATUS_SUSCEPTIBLE = 0
 STATUS_EXPOSED = 2
 STATUS_INFECTED = 1
 STATUS_REMOVED = 3
 STATUS_MITIGATED = 4
+
 
 
 ###########
@@ -321,7 +332,7 @@ def generate_summary_statistic_table(functions, model, measure_keys):
         data = load_data(functions[f])
 
         measures = get_single_measures(data, model)
-
+        s += functions[f]
         s += get_function_summary_statistics(measures, measure_keys)
 
     return s
@@ -422,8 +433,523 @@ def compare_distros(d1, d2, f1_name, f2_name, metric):
     return pVal
 
 
+# This is gross and hacked together
+# Should improve this later
+def break_function(mitigation, graph, static, values, key):
+    medians = []
+    iqrs = []
+    for v in values:
+        # Load data
+        data = load_data(mitigation + '_' + graph + '_' + str(v) + '_' + str(static))
+        # Format the data nice
+        measures = get_single_measures(data, model)
+        medians.append(np.median(measures[key]))
+        iqrs.append(scipy.stats.iqr(measures[key])/2)
+
+    return medians, iqrs
 
 
+def do_grow():
+    ## Max Infected ##
+    '''
+    # ER NON Static
+    m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'max_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'max_infected')
+    n, j = break_function('../function_tests_grow/mitigation_none', 'ER', True, EDGE_ps, 'max_infected')
+    o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'max_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('ER NONStatic --- Max Infected')
+    plt.xlabel('Edge Connection Probabilities')
+    plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+    plt.ylabel('Max Infected')
+    plt.show()
+
+
+    # NWS NON Static
+    m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'max_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'max_infected')
+    n, j = break_function('../function_tests_grow/mitigation_none', 'NWS', True, DROPs, 'max_infected')
+    o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'max_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('NWS NONStatic --- Max Infected')
+    plt.xlabel('Drops')
+    plt.xticks(range(len(m)), DROPs)
+    plt.ylabel('Max Infected')
+    plt.show()
+    '''
+    # BA NON Static
+    m, i = break_function('mitigation_all_F1', 'BA', True, GRAPH_SIZEs, 'max_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'max_infected')
+    n, j = break_function('mitigation_none', 'BA', True, GRAPH_SIZEs, 'max_infected')
+    o, k = break_function('mitigation_random', 'BA', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    print('F1', (m[-1] - m[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('Random', (o[-1] - o[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('None', (n[-1] - n[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('BA NONStatic --- Max Infected')
+    plt.xlabel('M')
+    plt.xlabel('|V|')
+    #plt.xticks(range(len(m)), Ms)
+    plt.xticks(range(len(m)), GRAPH_SIZEs)
+    plt.ylabel('Max Infected')
+    plt.show()
+
+    #################################
+    ## Total Infected ##
+    '''
+    # ER NON Static
+    m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'total_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'total_infected')
+    n, j = break_function('../function_tests_grow/mitigation_none', 'ER', True, EDGE_ps, 'total_infected')
+    o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'total_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('ER NONStatic --- Total Infected')
+    plt.xlabel('Edge Connection Probabilities')
+    plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+    plt.ylabel('total_infected')
+    plt.show()
+
+
+    # NWS NON Static
+    m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'total_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'total_infected')
+    n, j = break_function('../function_tests_grow/mitigation_none', 'NWS', True, DROPs, 'total_infected')
+    o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'total_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('NWS NONStatic --- Total Infected')
+    plt.xlabel('Drops')
+    plt.xticks(range(len(m)), DROPs)
+    plt.ylabel('total_infected')
+    plt.show()
+    '''
+    # BA NON Static
+    m, i = break_function('mitigation_all_F1', 'BA', True, GRAPH_SIZEs, 'total_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'total_infected')
+    n, j = break_function('mitigation_none', 'BA', True, GRAPH_SIZEs, 'total_infected')
+    o, k = break_function('mitigation_random', 'BA', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    print('F1', (m[-1] - m[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('Random', (o[-1] - o[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('None', (n[-1] - n[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('BA NONStatic --- Total Infected')
+    #plt.xlabel('Ms')
+    plt.xlabel('|V|')
+    #plt.xticks(range(len(m)), Ms)
+    plt.xticks(range(len(m)), GRAPH_SIZEs)
+    plt.ylabel('Total Infected')
+    plt.show()
+
+    ################
+    ## Mitigations Used ##
+    '''
+    # ER NON Static
+    m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'mitigation')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'mitigation')
+    n, j = break_function('../function_tests_grow/mitigation_none', 'ER', True, EDGE_ps, 'mitigation')
+    o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'mitigation')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('ER NONStatic --- Mitigation Used')
+    plt.xlabel('Edge Connection Probabilities')
+    plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+    plt.ylabel('Mitigations Used')
+    plt.show()
+
+
+    # NWS NON Static
+    m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'mitigation')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'mitigation')
+    n, j = break_function('../function_tests_grow/mitigation_none', 'NWS', True, DROPs, 'mitigation')
+    o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'mitigation')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('NWS NONStatic --- Mitigation Used')
+    plt.xlabel('Drops')
+    plt.xticks(range(len(m)), DROPs)
+    plt.ylabel('Mitigation Used')
+    plt.show()
+    '''
+    # BA NON Static
+    m, i = break_function('mitigation_all_F1', 'BA', True, GRAPH_SIZEs, 'mitigation')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'mitigation')
+    n, j = break_function('mitigation_none', 'BA', True, GRAPH_SIZEs, 'mitigation')
+    o, k = break_function('mitigation_random', 'BA', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    print('F1', (m[-1] - m[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('Random', (o[-1] - o[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('None', (n[-1] - n[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('BA NONStatic --- Mitigation Used')
+    #plt.xlabel('M')
+    plt.xlabel('|V|')
+    #plt.xticks(range(len(m)), Ms)
+    plt.xticks(range(len(m)), GRAPH_SIZEs)
+    plt.ylabel('Mitigation Used')
+    plt.show()
+
+
+def do_break():
+    ## Max Infected ##
+
+    # ER NON Static
+    m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'max_infected')
+    n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'max_infected')
+    o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'max_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('ER NONStatic --- Max Infected')
+    plt.xlabel('Edge Connection Probabilities')
+    plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+    plt.ylabel('Max Infected')
+    plt.show()
+
+
+    # NWS NON Static
+    m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'max_infected')
+    n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'max_infected')
+    o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'max_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('NWS NONStatic --- Max Infected')
+    plt.xlabel('Drops')
+    plt.xticks(range(len(m)), DROPs)
+    plt.ylabel('Max Infected')
+    plt.show()
+
+    # BA NON Static
+    m, i = break_function('mitigation_all_F1', 'BA', True, Ms, 'max_infected')
+    n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'max_infected')
+    o, k = break_function('mitigation_random', 'BA', True, Ms, 'max_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('BA NONStatic --- Max Infected')
+    plt.xlabel('M')
+    plt.xticks(range(len(m)), Ms)
+    plt.ylabel('Max Infected')
+    plt.show()
+
+    #################################
+    ## Total Infected ##
+
+    # ER NON Static
+    m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'total_infected')
+    n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'total_infected')
+    o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'total_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('ER NONStatic --- Total Infected')
+    plt.xlabel('Edge Connection Probabilities')
+    plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+    plt.ylabel('total_infected')
+    plt.show()
+
+
+    # NWS NON Static
+    m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'total_infected')
+    n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'total_infected')
+    o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'total_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('NWS NONStatic --- Total Infected')
+    plt.xlabel('Drops')
+    plt.xticks(range(len(m)), DROPs)
+    plt.ylabel('total_infected')
+    plt.show()
+
+    # BA NON Static
+    m, i = break_function('mitigation_all_F1', 'BA', True, Ms, 'total_infected')
+    n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'total_infected')
+    o, k = break_function('mitigation_random', 'BA', True, Ms, 'total_infected')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('BA NONStatic --- Total Infected')
+    plt.xlabel('M')
+    plt.xticks(range(len(m)), Ms)
+    plt.ylabel('total_infected')
+    plt.show()
+
+    ################
+    ## Mitigations Used ##
+
+    # ER NON Static
+    m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'mitigation')
+    n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'mitigation')
+    o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'mitigation')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('ER NONStatic --- Mitigation Used')
+    plt.xlabel('Edge Connection Probabilities')
+    plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+    plt.ylabel('Mitigations Used')
+    plt.show()
+
+
+    # NWS NON Static
+    m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'mitigation')
+    n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'mitigation')
+    o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'mitigation')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('NWS NONStatic --- Mitigation Used')
+    plt.xlabel('Drops')
+    plt.xticks(range(len(m)), DROPs)
+    plt.ylabel('Mitigation Used')
+    plt.show()
+
+    # BA NON Static
+    m, i = break_function('mitigation_all_F1', 'BA', True, Ms, 'mitigation')
+    n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'mitigation')
+    o, k = break_function('mitigation_random', 'BA', True, Ms, 'mitigation')
+    m = np.array(m)
+    n = np.array(n)
+    o = np.array(o)
+    i = np.array(i)
+    j = np.array(j)
+    k = np.array(k)
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    plt.legend()
+    plt.title('BA NONStatic --- Mitigation Used')
+    plt.xlabel('M')
+    plt.xticks(range(len(m)), Ms)
+    plt.ylabel('Mitigation Used')
+    plt.show()
 
 # Load Results
 
@@ -438,8 +964,256 @@ measure_keys = ['susceptible',
         'mitigation_effective', 
         'mitigation_ineffective']
 
-print(generate_summary_statistic_table(FUNCTIONS_STATIC_DB15, model, measure_keys))
-print()
+# For ER graph
+EDGE_ps = [0.015, 0.016, 0.017, 0.018, 0.019, 0.020, 0.021, 0.022, 0.023, 0.024, 0.025, 0.026, 0.027, 0.028, 0.029, 0.030, 0.031, 0.032, 0.033, 0.034, 0.035, 0.036, 0.037, 0.038, 0.039, 0.040, 0.041, 0.042, 0.043, 0.044, 0.045]
+
+# For NWS graph
+DROPs = [1100, 1000, 875, 750, 625, 500, 375, 250, 125, 0]
+# for BA graph
+Ms = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+GRAPH_SIZEs = [500, 1000, 1500, 2000]
+
+do_grow()
+
+## Max Infected ##
+
+# ER NON Static
+m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'max_infected')
+n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'max_infected')
+o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'max_infected')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('ER NONStatic --- Max Infected')
+plt.xlabel('Edge Connection Probabilities')
+plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+plt.ylabel('Max Infected')
+plt.show()
+
+
+# NWS NON Static
+m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'max_infected')
+n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'max_infected')
+o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'max_infected')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('NWS NONStatic --- Max Infected')
+plt.xlabel('Drops')
+plt.xticks(range(len(m)), DROPs)
+plt.ylabel('Max Infected')
+plt.show()
+
+# BA NON Static
+m, i = break_function('mitigation_all_F1', 'BA', True, Ms, 'max_infected')
+n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'max_infected')
+o, k = break_function('mitigation_random', 'BA', True, Ms, 'max_infected')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('BA NONStatic --- Max Infected')
+plt.xlabel('M')
+plt.xticks(range(len(m)), Ms)
+plt.ylabel('Max Infected')
+plt.show()
+
+#################################
+## Total Infected ##
+
+# ER NON Static
+m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'total_infected')
+n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'total_infected')
+o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'total_infected')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('ER NONStatic --- Total Infected')
+plt.xlabel('Edge Connection Probabilities')
+plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+plt.ylabel('total_infected')
+plt.show()
+
+
+# NWS NON Static
+m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'total_infected')
+n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'total_infected')
+o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'total_infected')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('NWS NONStatic --- Total Infected')
+plt.xlabel('Drops')
+plt.xticks(range(len(m)), DROPs)
+plt.ylabel('total_infected')
+plt.show()
+
+# BA NON Static
+m, i = break_function('mitigation_all_F1', 'BA', True, Ms, 'total_infected')
+n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'total_infected')
+o, k = break_function('mitigation_random', 'BA', True, Ms, 'total_infected')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('BA NONStatic --- Total Infected')
+plt.xlabel('M')
+plt.xticks(range(len(m)), Ms)
+plt.ylabel('total_infected')
+plt.show()
+
+################
+## Mitigations Used ##
+
+# ER NON Static
+m, i = break_function('mitigation_all_F1', 'ER', True, EDGE_ps, 'mitigation')
+n, j = break_function('../function_tests_break/mitigation_none', 'ER', True, EDGE_ps, 'mitigation')
+o, k = break_function('mitigation_random', 'ER', True, EDGE_ps, 'mitigation')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('ER NONStatic --- Mitigation Used')
+plt.xlabel('Edge Connection Probabilities')
+plt.xticks(range(len(EDGE_ps)), EDGE_ps)
+plt.ylabel('Mitigations Used')
+plt.show()
+
+
+# NWS NON Static
+m, i = break_function('mitigation_all_F1', 'NWS', True, DROPs, 'mitigation')
+n, j = break_function('../function_tests_break/mitigation_none', 'NWS', True, DROPs, 'mitigation')
+o, k = break_function('mitigation_random', 'NWS', True, DROPs, 'mitigation')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('NWS NONStatic --- Mitigation Used')
+plt.xlabel('Drops')
+plt.xticks(range(len(m)), DROPs)
+plt.ylabel('Mitigation Used')
+plt.show()
+
+# BA NON Static
+m, i = break_function('mitigation_all_F1', 'BA', True, Ms, 'mitigation')
+n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'mitigation')
+o, k = break_function('mitigation_random', 'BA', True, Ms, 'mitigation')
+m = np.array(m)
+n = np.array(n)
+o = np.array(o)
+i = np.array(i)
+j = np.array(j)
+k = np.array(k)
+
+plt.plot(m, label='F1')
+plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+plt.plot(n, label='None')
+plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+plt.plot(o, label='Random')
+plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+plt.legend()
+plt.title('BA NONStatic --- Mitigation Used')
+plt.xlabel('M')
+plt.xticks(range(len(m)), Ms)
+plt.ylabel('Mitigation Used')
+plt.show()
+
+#print(generate_summary_statistic_table(FUNCTIONS_STATIC_DB15, model, measure_keys))
+#print()
 
 #print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
 #print()
