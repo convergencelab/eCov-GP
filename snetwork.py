@@ -28,6 +28,7 @@ Change Log:
         - Added Powerlaw Cluster Graph
             - https://networkx.org/documentation/stable/reference/generated/networkx.generators.random_graphs.powerlaw_cluster_graph.html#networkx.generators.random_graphs.powerlaw_cluster_graph
         - Kinda' like a BA graph, but makes it cluster
+        - This idea came from the talk at Dalhousie where it was suggested by to have better clustering graphs
 
 
 End Change Log

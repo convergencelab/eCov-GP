@@ -1,17 +1,19 @@
 '''
 Author:     James Hughes
-Date:       October 28, 2020
+Date:       November 4, 2020
 
 Version:    0.1
 
 
 Change Log:
-    0.1 (October 28, 2020): 
+    0.1 (November 4, 2020): 
         - Initial version.
 
 End Change Log
 
-Similar to eCov-test, but this one will keep going and increase the connected-ness of the graphs. 
+Similar to eCov-test & -test-break, but this one will keep going and increase the number of verticies in the graph.
+
+Currently this is really only working for BA well. But this can likely be changed.  
 
 '''
 
@@ -43,7 +45,12 @@ BETA = 0.09            # Spread Probability (25% works for Wendy graph)
 GAMMA = 0.133           # Removal Probability. Based on 7 day, from sources
 ALPHA = 6.4             # Latent period. Based on 6.4 days, from sources
 INFECTED_0 = 0.02
-GRAPH_SIZE = 500
+#GRAPH_SIZE = 500
+#GRAPH_SIZE = 1000
+#GRAPH_SIZE = 1500
+GRAPH_SIZE = 2000
+#GRAPH_SIZE = 2500
+
 
 # For ER graph
 EDGE_p = 0.016
@@ -56,19 +63,14 @@ REWIRE_p = 0.20
 DROP = 1000
 DROPs = [1100, 1000, 875, 750, 625, 500, 375, 250, 125, 0]
 # for BA graph
-#M = 3    
+M = 4    
 #Ms = [3, 4, 5, 6, 7, 8]
-#Ms = [9, 10, 11, 12, 13, 14, 15]
-
-# for BA graph
-#M = 4    
-#Ms = [3, 4, 5, 6, 7, 8]
+Ms = [9, 10, 11, 12, 13, 14, 15]
 
 # For PCG (Powerlaw Cluster Graph)
 N_EDGES = 4
 N_EDGESs = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 TRI_P = 0.66
-
 
 ITERATIONS = 98
 MEASURE_EVERY = 7
@@ -79,8 +81,8 @@ USE_ALL = True              ###########
 ###########
 
 # Testing Params
-OUTPUT_DIRECTORY = "./function_tests_use_all_break/"
-#OUTPUT_DIRECTORY = "./function_tests_break/"
+OUTPUT_DIRECTORY = "./function_tests_use_all_grow/"
+#OUTPUT_DIRECTORY = "./function_tests_grow/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 #FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
@@ -103,7 +105,8 @@ functions = [strategies.mitigation_all_F1, strategies.mitigation_random, strateg
 #increases = EDGE_ps
 #increases = DROPs
 #increases = Ms
-increases = N_EDGESs
+increases = [GRAPH_SIZE]
+
 
 for value in increases:
    
@@ -146,7 +149,7 @@ for value in increases:
                     #GRAPH_TYPE = "NWS"
 
                     # BA
-                    #model = snetwork.setup_network(size=GRAPH_SIZE, m=value, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                    #model = snetwork.setup_network(size=value, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
                     #GRAPH_TYPE = "BA"
 
                     # PCG

@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       June 11, 2020
 
-Version:    0.5
+Version:    0.6
 
 
 Change Log:
@@ -23,6 +23,9 @@ Change Log:
     0.5 (October 22, 2020):
         - Small change to include use all option in evaluation/mitigation strategy
         - WARNING: BE CAREFUL WHEN RUNNING NONE AS IT WILL JUST BE THE SECONDARY FUNCTION
+
+    0.6 (November 10, 2020):
+        - Added PCG
 
 End Change Log
 
@@ -69,9 +72,15 @@ KNN = 10
 REWIRE_p = 0.20
 DROP = 1000
 DROPs = [1100, 1000, 875, 750, 625, 500, 375, 250, 125, 0]
+
 # for BA graph
-M = 3    
+M = 4    
 Ms = [3, 4, 5, 6, 7, 8]
+
+# For PCG (Powerlaw Cluster Graph)
+N_EDGES = 4
+TRI_P = 0.66
+
 
 ITERATIONS = 98
 MEASURE_EVERY = 7
@@ -81,14 +90,15 @@ USE_ALL = False              ###########
 ###########
 
 # Testing Params
-OUTPUT_DIRECTORY = "./function_tests_use_all/"
+#OUTPUT_DIRECTORY = "./function_tests_use_all/"
+OUTPUT_DIRECTORY = "./function_tests/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 #FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
-#functions = [strategies.mitigation_none, strategies.mitigation_random, strategies.mitigation_traveler, strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10, strategies.mitigation_all_F1]
+functions = [strategies.mitigation_none, strategies.mitigation_random, strategies.mitigation_traveler, strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10, strategies.mitigation_all_F1]
 #functions = [strategies.mitigation_none]
-functions = [strategies.mitigation_all_F1]
+#functions = [strategies.mitigation_all_F1]
 
 ###########
 
@@ -138,8 +148,12 @@ for topology in [False, True]:
                 #GRAPH_TYPE = "NWS"
 
                 # BA
-                model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
-                GRAPH_TYPE = "BA"
+                #model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                #GRAPH_TYPE = "BA"
+
+                # PCG
+                model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                GRAPH_TYPE = "PCG"
 
                 # Identify Static Whole Graph Measures
                 travelers = get_travelers(model)

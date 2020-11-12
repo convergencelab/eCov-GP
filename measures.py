@@ -198,7 +198,7 @@ def get_page_rank(model):
 
 
 # Get the nodes' clustering coefficient
-def clustering_coefficient(model)
+def clustering_coefficient(model):
     return nx.algorithms.cluster.clustering(model.graph.graph)
 
 ########################

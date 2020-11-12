@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       July 8, 2020
 
-Version:    0.3
+Version:    0.4
 
 
 Change Log:
@@ -14,6 +14,9 @@ Change Log:
    
     0.3 (September 1, 2020):
         - Changed param values to get better graph stats (avg. degree, avg. dist)
+
+    0.4 (November 10, 2020):
+        - Testing the new PCG graph that was added to snetwork
 
 End Change Log
 
@@ -62,12 +65,11 @@ REWIRE_p = 0.20
 DROP = 1000
 
 # For BA graph
-M = 3      
+M = 4      
 
 # For PCG (Powerlaw Cluster Graph)
-
-n_edges = 7
-triangle_p = 0.10
+N_EDGES = 4
+TRI_P = 0.66
       
 # Get the average degree of the graph
 def get_average_degree(model):
@@ -111,7 +113,7 @@ os.environ['PATH'] = os.environ['PATH']+';'+os.environ['CONDA_PREFIX']+r"\Librar
 # BA
 #model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # PCG
-model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=, triangle_p=, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 
 
@@ -122,6 +124,9 @@ avg_degree = get_average_degree(model)
 print(avg_degree)
 dist = get_average_dist(model)
 print(dist)
+
+cluster = nx.algorithms.cluster.clustering(model.graph.graph)
+print(sum(cluster.values())/len(cluster.values()), min(cluster.values()), max(cluster.values()))
 
 '''
 # List to record network changes throughout simulation
@@ -137,8 +142,8 @@ viz = DiffusionTrend(model, trends)
 #viz.plot()
 
 '''
-#nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
-#plt.show()
+nx.draw(model.graph.graph,node_size=25, alpha=0.75, width=0.5, edge_color='grey')         
+plt.show()
 '''
 mvc = get_min_vertex_cover(model)
 print(len(mvc))

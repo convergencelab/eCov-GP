@@ -55,6 +55,11 @@ Change Log:
     0.14 (October 26, 2020):
         - Added the use all flag to make it so we use the secondary strategy
 
+    0.15 (November 12, 2020):
+        - Added the option to have PCG (the best random graph so far). 
+        - This addition will only include chanes for Phase 1 of runs 
+            * No new measures; keep similar for easy comparison. 
+
 End Change Log
 
 
@@ -172,7 +177,11 @@ REWIRE_p = 0.20
 DROP = 1000
 
 # for BA graph
-M = 3    
+M = 4    
+
+# For PCG (Powerlaw Cluster Graph)
+N_EDGES = 4
+TRI_P = 0.66
 #############################
 
 ITERATIONS = 98
@@ -206,13 +215,16 @@ def evaluate_population(pop):
 ##################
 
 # Load custom graph
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
 #model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# PCG
+model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+
 
 # Identify Static Whole Graph Measures
 travelers = get_travelers(model)
