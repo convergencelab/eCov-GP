@@ -79,8 +79,8 @@ USE_ALL = True              ###########
 ###########
 
 # Testing Params
-OUTPUT_DIRECTORY = "./function_tests_use_all_break/"
-#OUTPUT_DIRECTORY = "./function_tests_break/"
+OUTPUT_DIRECTORY = "./function_tests_break/"
+#OUTPUT_DIRECTORY = "./function_tests_use_all_break/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 #FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
@@ -150,7 +150,7 @@ for value in increases:
                     #GRAPH_TYPE = "BA"
 
                     # PCG
-                    model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                    model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=value, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
                     GRAPH_TYPE = "PCG"
 
                     # Identify Static Whole Graph Measures

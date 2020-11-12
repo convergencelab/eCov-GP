@@ -153,7 +153,7 @@ for value in increases:
                     #GRAPH_TYPE = "BA"
 
                     # PCG
-                    model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+                    model = snetwork.setup_network(size=value, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
                     GRAPH_TYPE = "PCG"
 
                     # Identify Static Whole Graph Measures
