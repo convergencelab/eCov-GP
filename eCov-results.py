@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 22, 2020
 
-Version:    0.12
+Version:    0.14
 
 Change Log:
     0.1: 
@@ -45,8 +45,15 @@ Change Log:
         - Print average results for fitness
         - Print arg mins/maxs for fitnesses
 
-    0.11 (September 17, 2020):
+    0.12 (September 17, 2020):
         - Print best 5 for total infected over time metric (this assumes we have this metric as the last element in the objectives)
+
+    0.13 (November 24, 2020):
+        - Added a function to investigate whole population batch results 
+
+    0.14 (November 25, 2020):
+        - new function, save_function 
+            * We can just dump the function out and load it up in another place (strategies)
 
 End Change Log
 
@@ -56,6 +63,8 @@ End Change Log
 # Imports #
 ###########
 
+import csv
+import dill
 import math
 import matplotlib.pyplot as plt
 import ndlib.models.ModelConfig as mc
@@ -93,7 +102,71 @@ import snetwork
 
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = ""
-RESULTS_NAME = "09-18-2020_07-36-27.pkl"
+RESULTS_NAME = "12-08-2020_10-36-23.pkl" # 105 2471.5
+#RESULTS_NAME = "12-08-2020_13-20-06.pkl" # 109.5 2680
+#RESULTS_NAME = "12-08-2020_14-40-36.pkl" # 114.5 2542.5
+#RESULTS_NAME = "12-08-2020_15-36-04.pkl" # 112.5 2654
+#RESULTS_NAME = "12-08-2020_15-40-26.pkl" # 111 2532.5
+#RESULTS_NAME = "12-08-2020_15-48-28.pkl" # 110.5 2528
+#RESULTS_NAME = "12-08-2020_18-17-53.pkl" # 107.5 2584.5
+#RESULTS_NAME = "12-08-2020_20-28-39.pkl" # 110 2600.5
+
+
+
+#SUB_DIRECTORY = "December-Generation_500"
+#RESULTS_NAME = "12-02-2020_23-55-14.pkl" # good
+#RESULTS_NAME = "12-03-2020_00-29-14.pkl" # ok
+#RESULTS_NAME = "12-03-2020_01-18-07.pkl" # meh
+#RESULTS_NAME = "12-03-2020_01-18-21.pkl" # ok
+#RESULTS_NAME = "12-03-2020_01-27-56.pkl" # meh
+#RESULTS_NAME = "12-03-2020_01-28-17.pkl" # ok
+#RESULTS_NAME = "12-03-2020_01-31-23.pkl" # good
+#RESULTS_NAME = "12-03-2020_01-42-29.pkl" # less than good, better than meh
+
+
+
+
+
+#SUB_DIRECTORY = "December_PCG_ignore"
+#RESULTS_NAME = "12-01-2020_01-21-38.pkl"
+#RESULTS_NAME = "12-01-2020_02-24-13.pkl"
+#RESULTS_NAME = "12-01-2020_02-51-25.pkl"
+#RESULTS_NAME = "12-01-2020_02-57-24.pkl"
+#RESULTS_NAME = "12-01-2020_03-04-51.pkl"
+#RESULTS_NAME = "12-01-2020_03-06-24.pkl"
+#RESULTS_NAME = "12-01-2020_03-07-32.pkl"
+#RESULTS_NAME = "12-01-2020_03-07-44.pkl"
+
+
+
+#SUB_DIRECTORY = "November_PCG_Phase1"
+#RESULTS_NAME = "11-13-2020_04-32-30.pkl"
+#RESULTS_NAME = "11-13-2020_04-53-42.pkl"
+#RESULTS_NAME = "11-13-2020_05-04-27.pkl"###########################
+#RESULTS_NAME = "11-13-2020_05-04-55.pkl"
+#RESULTS_NAME = "11-13-2020_05-16-35.pkl"
+#RESULTS_NAME = "11-13-2020_05-19-37.pkl"
+#RESULTS_NAME = "11-13-2020_05-20-57.pkl"
+#RESULTS_NAME = "11-13-2020_05-37-11.pkl"
+
+#SUB_DIRECTORY = "November_PCG_Phase2"
+#RESULTS_NAME = "11-15-2020_01-25-39.pkl"
+#RESULTS_NAME = "11-15-2020_01-52-35.pkl"
+#RESULTS_NAME = "11-15-2020_02-32-00.pkl"
+#RESULTS_NAME = "11-15-2020_02-39-13.pkl"
+#RESULTS_NAME = "11-15-2020_02-58-59.pkl"
+#RESULTS_NAME = "11-15-2020_03-08-52.pkl"
+#RESULTS_NAME = "11-15-2020_03-17-05.pkl"
+#RESULTS_NAME = "11-15-2020_03-21-30.pkl"
+
+#SUB_DIRECTORY = "November_PCG_Phase3"
+#RESULTS_NAME = "11-18-2020_18-59-09.pkl"
+#RESULTS_NAME = "11-18-2020_19-03-40.pkl"
+#RESULTS_NAME = "11-18-2020_20-22-54.pkl"
+#RESULTS_NAME = "11-18-2020_20-29-42.pkl"
+#RESULTS_NAME = "11-18-2020_20-38-02.pkl"
+#RESULTS_NAME = "11-18-2020_20-59-25.pkl"
+#RESULTS_NAME = "11-18-2020_21-16-02.pkl"
 
 # Graph & Disease
 GRAPH_DIRECTORY = './../GRAPHS/sg_infectious_graphs/'
@@ -113,32 +186,42 @@ KNN = 10
 REWIRE_p = 0.20
 DROP = 1000
 
-# for BA graph
-M = 3    
+# For PCG (Powerlaw Cluster Graph)
+N_EDGES = 4
+TRI_P = 0.66
+#############################
 
 ITERATIONS = 140        
 MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 20
-ROLLOVER = True
-
+ROLLOVER = False
+USE_ALL = False
 ##################
 # Epidemic Setup #
 ##################
 
 
-model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+#model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # ER
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, edge_p=EDGE_p, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # NWS
 #model = snetwork.setup_network(directory=GRAPH_DIRECTORY, name=GRAPH_NAME, size=GRAPH_SIZE, rewire_p=REWIRE_p, knn=KNN, alpha=ALPHA, drop=DROP, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 # BA
 #model = snetwork.setup_network(size=GRAPH_SIZE, m=M, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
+# PCG
+model = snetwork.setup_network(size=GRAPH_SIZE, n_edges=N_EDGES, triangle_p=TRI_P, alpha=ALPHA, beta=BETA, gamma=GAMMA, infected=INFECTED_0)
 
 # Identify Static Whole Graph Measures
 travelers = get_travelers(model)
 average_degree = get_average_degree(model)
 shortest_distances = get_shortest_distances_all_nodes(model)
 average_distance = get_avg_distances_all_nodes(model)
+
+vertex_average_distance = get_node_avg_distances_all_nodes(model)
+minimal_vertex_cover = get_min_vertex_cover(model)
+number_shortest_paths = get_node_number_shortest_paths(model)
+page_rank = get_all_page_rank(model)
+cluster_coef = clustering_coefficient(model)
 
 ############
 # GP Setup #
@@ -155,14 +238,66 @@ results = pickle.load(open(os.path.join(RESULTS_DIRECTORY, SUB_DIRECTORY, RESULT
 population = results["population"]
 logbook = results["logbook"]
 
+#########################################################
+# Functions for looking at data and pop summary results #
+#########################################################
+
+def load_population_results():
+    pRes = csv.reader(open(os.path.join(RESULTS_DIRECTORY, SUB_DIRECTORY, RESULTS_NAME[:-4] + '-population-results.csv'), 'r'))
+    pRes = np.array(list(pRes)).astype(float)
+    return pRes
 
 
+def print_summary(results):
+    print()
+    print("mean, median")
+    print(results.mean(axis=0))
+    print(np.median(results,axis=0))
+    print()
+
+    print("min, arg min")
+    print(results.min(axis=0))
+    print(results.argmin(axis=0))
+    print("Best 5 MI", np.argsort(results[:,0])[:5])
+
+    #print("max, arg max")
+    #print(results.max(axis=0))
+    #print(results.argmax(axis=0))
+    #print("Best 5 MI ", np.argsort(results[:,0])[-6:])
+    print()
+
+    #print("min, arg min")
+    #print(results.min(axis=0))
+    #print(results.argmin(axis=0))
+    print("Best 5 TI", np.argsort(results[:,-1])[:5])
+
+    #print("max, arg max")
+    #print(results.max(axis=0))
+    #print(results.argmax(axis=0))
+    #print("Best 5 TI ", np.argsort(results[:,-1])[-6:])
+
+
+def save_function(pop, i):
+    # Turn the population into functions to be evaluated
+    compiled_ind = toolbox.compile(pop[i])
+    print(compiled_ind)
+    string_compiled_ind = dill.dumps(compiled_ind)
+    print(string_compiled_ind)
+    oFileName = os.path.join(RESULTS_DIRECTORY, SUB_DIRECTORY, RESULTS_NAME[:-4] + '_' + str(i) + '-compiled.dill')
+    dill.dump(compiled_ind, open(oFileName, 'wb'))
+    #pickle.dump(string_compiled_ind, open(oFileName, 'w'))
+    #pickle.dump(compiled_ind, open(oFileName, 'w'))
 
 ###############################
 # Visualize Results as Trees  #
 ###############################
 
 def draw_tree(ind):
+    # Print out text version of tree
+    print(ind)
+    
+    # Drawing stuff
+    # Couldn't get this working on Windows :( 
     nodes, edges, labels = gp.graph(ind)
 
     g = nx.Graph()
@@ -191,7 +326,16 @@ for i in range(len(population)):
 
 # Print summary stats
 all_results = np.array(all_results)
+print_summary(all_results)
 
+# Results gen from ...-population
+pop_res = load_population_results()
+pop_res = pop_res[:, [1,2]]
+print_summary(pop_res)
+
+
+
+'''
 print()
 print("mean, median")
 print(all_results.mean(axis=0))
@@ -208,6 +352,8 @@ print("max, arg max")
 print(all_results.max(axis=0))
 print(all_results.argmax(axis=0))
 print("Best 5", np.argsort(all_results[:,-1])[-6:])
+'''
+
 
 ########################
 # Run on SEIR network  #
@@ -217,7 +363,7 @@ def no_mit(a,b,c,d,e,f):
     return False
 
 def diffusion_trend(ind):
-    iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(ind), m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER)
+    iterations, iterations_mitigations = evaluate.evaluate_individual(toolbox.compile(ind), m=model, traveler_set=travelers, mvc_set=minimal_vertex_cover, vert_avg_dist=vertex_average_distance, number_vertex_shortest=number_shortest_paths, Page_Rank=page_rank, Cluster_Coeff=cluster_coef, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
     trends = model.build_trends(iterations)
     # Visualization
     viz = DiffusionTrend(model, trends)
@@ -228,4 +374,9 @@ def diffusion_trend(ind):
 
 
 #diffusion_trend(population[0])
+
+
+
+
+
 

@@ -43,6 +43,10 @@ Change Log:
     0.9 (November 10, 2020):
         - Added clustering coefficient measure
 
+    0.10 (November 13, 2020):
+        - Fixed # shortest paths
+        - Added single measures corresponding to whole graph measures
+
 End Change Log
 
 All graph measures are contained within this file. 
@@ -174,6 +178,7 @@ def get_shortest_paths_all_nodes(model):
 # For example, 0 is in the shortest path from 0 to X
 # WARNING, I THINK THIS ONLY CONSIDERS ONE PATH IF MORE THAN 
 #  ONE SHORTEST PATH EXISTS!!!!!!!
+##### WARNING, ACTUALLY, I THINK IT'S GOOD! BUT STILL NOT SURE REALLY
 def get_node_number_shortest_paths(model):
     paths = dict(nx.shortest_path(model.graph.graph))
     nodes = list(model.graph.graph.nodes)
@@ -181,19 +186,19 @@ def get_node_number_shortest_paths(model):
     counts = np.zeros(len(nodes))
 
     # For each node pair (each)
-    for i in range(nodes):
-        for j in range(nodes):
+    for i in range(len(nodes)):
+        for j in range(len(nodes)):
             
             # Iterate over the shortest path
             # and add the indicies to the counts array
-            for k in len(paths[i][j]):
+            for k in range(len(paths[i][j])):
                 counts[paths[i][j][k]] += 1
 
     return counts
     
 # Gets the pagerank
 # Not sure how helpful this will really be
-def get_page_rank(model):
+def get_all_page_rank(model):
     return nx.algorithms.link_analysis.pagerank_alg.pagerank(model.graph.graph)
 
 
@@ -273,9 +278,7 @@ def get_avg_neighbour_degree(model, node):
 def is_traveler(travelers, node):
     return node in travelers
 
-# Is the current node in the minimal vertex cover
-def is_in_min_cover(mvc, node):
-    return node in mvc
+
 
 # get number of neighbors of a certain status
 def get_num_neighbour_status(model, node, target_status=0):
@@ -295,6 +298,21 @@ def get_shortest_distance(dists, node, targets):
         except KeyError:
                 pass        # just do nothing
     return shortest
+
+# get the vertex average dist to all other nodes
+def get_vertex_average_dist(vertex_avg_dist, node):
+    return vertex_avg_dist[node]
+
+# Is the current node in the minimal vertex cover
+def is_in_min_cover(mvc, node):
+    return node in mvc
+
+def get_vertex_num_shortest_paths(num_shortest, node):
+    return num_shortest[node]
+
+# Gets the Pagerank value for node
+def get_page_rank(page_rank, node):
+    return page_rank[node]
 
 # Gets the coefficient of a node
 def get_cluster_coefficient(clusterC, node):

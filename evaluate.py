@@ -96,7 +96,7 @@ def default_use_all(node_degree,
 ######################
    
 # Fitness Function
-def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist={} , total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False, use_all=False, use_all_function=default_use_all):
+def evaluate_individual(f, m, traveler_set, mvc_set=None, avg_degree=0, avg_dist=0, short_dist={}, vert_avg_dist=None, number_vertex_shortest=None, Page_Rank=None, Cluster_Coeff=None, total_iterations=0, measure_every=0, mitigations_per_measure=0, rollover=False, use_all=False, use_all_function=default_use_all):
 
     max_infected = 0
     total_infected = 0
@@ -161,6 +161,12 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist
 
                     s_dist_inf = get_shortest_distance(short_dist, s, infected)
 
+                    vertex_avg_dist = get_vertex_average_dist(vert_avg_dist, s)                     # vert_avg_dist
+                    minimal_vertex_cover = is_in_min_cover(mvc_set, s)                              # MVX
+                    num_vert_shortest = get_vertex_num_shortest_paths(number_vertex_shortest, s)    # num_short
+                    page_rank = get_page_rank(Page_Rank, s)                                         # PR
+                    cluster_coefficient =  get_cluster_coefficient(Cluster_Coeff, s)                # CCoef
+
                     do_we_mitigate = f(
                                         #node_status,
                                         node_degree,
@@ -169,14 +175,19 @@ def evaluate_individual(f, m, traveler_set, avg_degree=0, avg_dist=0, short_dist
                                         neighbour_infected,
                                         #neighbour_removed,
                                         traveler,
+                                        minimal_vertex_cover,
                                         avg_degree,
-                                        #avg_dist,
+                                        avg_dist,
+                                        vertex_avg_dist,
                                         #num_mitigation,
                                         #mitigation,
                                         num_susexp,
                                         num_infected,
                                         num_removed,
+                                        num_vert_shortest,
                                         #s_dist_inf,
+                                        page_rank,
+                                        cluster_coefficient,
                                         #i,
                                         )
                     if do_we_mitigate:

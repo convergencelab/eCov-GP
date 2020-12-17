@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.14
+Version:    0.16
 
 
 Change Log:
@@ -59,6 +59,17 @@ Change Log:
         - Added the option to have PCG (the best random graph so far). 
         - This addition will only include chanes for Phase 1 of runs 
             * No new measures; keep similar for easy comparison. 
+
+    0.16 (November 13, 2020):
+        - Added new measures:
+            * Minimal Vertex Cover
+            * Node avg dist to all nodes
+            * number of times node in shortest path
+            * Pagerank
+            * Cluster Coef
+            * Added multiply
+            * Added divide
+            * let trees go a little deeper
 
 End Change Log
 
@@ -148,7 +159,7 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 500
+POPULATION = 1000
 GENERATIONS = 500
 CROSSOVER = 0.8
 MUTATION = 0.15
@@ -206,8 +217,9 @@ def evaluate_population(pop):
         # DO NOT FORGET TO UNPACK THE DICTS WITH TEENDS AND WHATNOT!!!!!
         final_susceptible, max_infected, total_infected, final_removed = evaluate.convert_iterations(fit[0], model)
         total_mitigations, effective_mitigations, ineffective_mitigations = evaluate.convert_iterations_mitigations(fit[1])
-        ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
+        #ind.fitness.values = (final_susceptible, total_mitigations, max_infected, total_infected, )
         #ind.fitness.values = (final_susceptible, )
+        ind.fitness.values = (max_infected, total_infected, )
 
 
 ##################
@@ -232,11 +244,18 @@ average_degree = get_average_degree(model)
 shortest_distances = get_shortest_distances_all_nodes(model)
 average_distance = get_avg_distances_all_nodes(model)
 
+# Phase PCG Phase 2 add
+vertex_average_distance = get_node_avg_distances_all_nodes(model)
+minimal_vertex_cover = get_min_vertex_cover(model)
+number_shortest_paths = get_node_number_shortest_paths(model)
+page_rank = get_all_page_rank(model)
+cluster_coef = clustering_coefficient(model)
+
 ############
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, mvc_set=minimal_vertex_cover, vert_avg_dist=vertex_average_distance, number_vertex_shortest=number_shortest_paths, Page_Rank=page_rank, Cluster_Coeff=cluster_coef, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
 
 
 #######################

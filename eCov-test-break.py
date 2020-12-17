@@ -79,8 +79,8 @@ USE_ALL = True              ###########
 ###########
 
 # Testing Params
-OUTPUT_DIRECTORY = "./function_tests_break/"
-#OUTPUT_DIRECTORY = "./function_tests_use_all_break/"
+#OUTPUT_DIRECTORY = "./function_tests_break/"
+OUTPUT_DIRECTORY = "./function_tests_use_all_break/"
 N = 100
 CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 #FUNCTION = strategies.mitigation_degree5       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
@@ -89,7 +89,8 @@ CHANGE_TOPOLOGY = True                     # CHANGE ME FOR STATIC/DYNAMIC
 #functions = [strategies.mitigation_none]
 #functions = [strategies.mitigation_random]
 #functions = [strategies.mitigation_all_F1]
-functions = [strategies.mitigation_all_F1, strategies.mitigation_random, strategies.mitigation_none]
+#functions = [strategies.mitigation_all_F1, strategies.mitigation_random, strategies.mitigation_none]
+functions = [strategies.mitigation_PCG_F1, strategies.mitigation_PCG_F2, strategies.mitigation_PCG_F3]
 
 
 ###########
@@ -159,14 +160,21 @@ for value in increases:
                     shortest_distances = get_shortest_distances_all_nodes(model)
                     average_distance = get_avg_distances_all_nodes(model)
 
+                    # Phase PCG Phase 2 add
+                    vertex_average_distance = get_node_avg_distances_all_nodes(model)
+                    minimal_vertex_cover = get_min_vertex_cover(model)
+                    number_shortest_paths = get_node_number_shortest_paths(model)
+                    page_rank = get_all_page_rank(model)
+                    cluster_coef = clustering_coefficient(model)
+
 
                 # Evaluate the function
                 # If we are doing the non mitigation 
                 # we must not do a secondary strategy
                 if FUNCTION.__name__ != "mitigation_none":
-                    iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
+                    iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, mvc_set=minimal_vertex_cover, vert_avg_dist=vertex_average_distance, number_vertex_shortest=number_shortest_paths, Page_Rank=page_rank, Cluster_Coeff=cluster_coef, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
                 else:
-                    iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=False)
+                    iterations, iterations_mitigations = evaluate.evaluate_individual(FUNCTION, m=model, traveler_set=travelers, mvc_set=minimal_vertex_cover, vert_avg_dist=vertex_average_distance, number_vertex_shortest=number_shortest_paths, Page_Rank=page_rank, Cluster_Coeff=cluster_coef, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
 
                 # Bookkeeping
                 all_iterations.append(iterations)

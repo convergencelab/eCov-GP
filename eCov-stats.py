@@ -65,14 +65,7 @@ import snetwork
 # PARAMS  #
 ###########
 
-# Use for simple
-#RESULTS_DIRECTORY = "./function_tests/"
-# Use for the use all/secondary strategy
-RESULTS_DIRECTORY = "./function_tests_use_all/"
-#RESULTS_DIRECTORY = "./function_tests_break/"
-#RESULTS_DIRECTORY = "./function_tests_use_all_break/"
-#RESULTS_DIRECTORY = "./function_tests_grow/"
-#RESULTS_DIRECTORY = "./function_tests_use_all_grow/"
+
 
 
 MEASURE_EVERY = 7
@@ -88,6 +81,9 @@ FUNCTIONS_STATIC_ER = [
             'mitigation_degree9_ER_False',
             'mitigation_degree10_ER_False',
             'mitigation_all_F1_ER_False',
+            'mitigation_PCG_F1_ER_False',
+            'mitigation_PCG_F2_ER_False',
+            'mitigation_PCG_F3_ER_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -117,6 +113,9 @@ FUNCTIONS_STATIC_NWS = [
             'mitigation_degree9_NWS_False',
             'mitigation_degree10_NWS_False',
             'mitigation_all_F1_NWS_False',
+            'mitigation_PCG_F1_NWS_False',
+            'mitigation_PCG_F2_NWS_False',
+            'mitigation_PCG_F3_NWS_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -131,6 +130,9 @@ FUNCTIONS_NONSTATIC_NWS = [
             'mitigation_degree9_NWS_True',
             'mitigation_degree10_NWS_True',
             'mitigation_all_F1_NWS_True',
+            'mitigation_PCG_F1_NWS_True',
+            'mitigation_PCG_F2_NWS_True',
+            'mitigation_PCG_F3_NWS_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -146,6 +148,9 @@ FUNCTIONS_STATIC_BA = [
             'mitigation_degree9_BA_False',
             'mitigation_degree10_BA_False',
             'mitigation_all_F1_BA_False',
+            'mitigation_PCG_F1_BA_False',
+            'mitigation_PCG_F2_BA_False',
+            'mitigation_PCG_F3_BA_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -160,6 +165,9 @@ FUNCTIONS_NONSTATIC_BA = [
             'mitigation_degree9_BA_True',
             'mitigation_degree10_BA_True',
             'mitigation_all_F1_BA_True',
+            'mitigation_PCG_F1_BA_True',
+            'mitigation_PCG_F2_BA_True',
+            'mitigation_PCG_F3_BA_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -174,6 +182,19 @@ FUNCTIONS_STATIC_PCG = [
             'mitigation_degree9_PCG_False',
             'mitigation_degree10_PCG_False',
             'mitigation_all_F1_PCG_False',
+            'mitigation_PCG_F1_PCG_False',
+            'mitigation_PCG_F2_PCG_False',
+            'mitigation_PCG_F3_PCG_False',
+            'mitigation_PCG_F4_PCG_False',
+            'mitigation_PCG_F5_PCG_False',
+            'mitigation_PCG_F6_PCG_False',
+            'mitigation_PCG_F7_PCG_False',
+            'mitigation_PCG_F8_PCG_False',
+            'mitigation_PCG_F9_PCG_False',
+            'mitigation_PCG_F10_PCG_False',
+            'mitigation_PCG_F11_PCG_False',
+            'mitigation_PCG_F12_PCG_False',
+            'mitigation_PCG_F99_PCG_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -188,6 +209,19 @@ FUNCTIONS_NONSTATIC_PCG = [
             'mitigation_degree9_PCG_True',
             'mitigation_degree10_PCG_True',
             'mitigation_all_F1_PCG_True',
+            'mitigation_PCG_F1_PCG_True',
+            'mitigation_PCG_F2_PCG_True',
+            'mitigation_PCG_F3_PCG_True',
+            'mitigation_PCG_F4_PCG_True',
+            'mitigation_PCG_F5_PCG_True',
+            'mitigation_PCG_F6_PCG_True',
+            'mitigation_PCG_F7_PCG_True',
+            'mitigation_PCG_F8_PCG_True',
+            'mitigation_PCG_F9_PCG_True',
+            'mitigation_PCG_F10_PCG_True',
+            'mitigation_PCG_F11_PCG_True',
+            'mitigation_PCG_F12_PCG_True',
+            'mitigation_PCG_F99_PCG_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -203,6 +237,9 @@ FUNCTIONS_STATIC_DB15 = [
             'mitigation_degree9_DB15_False',
             'mitigation_degree10_DB15_False',
             'mitigation_all_F1_DB15_False',
+            'mitigation_PCG_F1_DB15_False',
+            'mitigation_PCG_F2_DB15_False',
+            'mitigation_PCG_F3_DB15_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -588,6 +625,26 @@ def do_grow():
     plt.plot(o, label='Random')
     plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
 
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
     plt.legend()
     plt.title('PCG NONStatic --- Max Infected')
     plt.xlabel('|V|')
@@ -595,6 +652,60 @@ def do_grow():
     plt.xticks(range(len(m)), GRAPH_SIZEs)
     plt.ylabel('Max Infected')
     plt.show()
+
+
+    # PCG NON Static
+    m, i = break_function('mitigation_all_F1', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'total_infected')
+    n, j = break_function('mitigation_none', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    o, k = break_function('mitigation_random', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    n = np.array(n)/[500, 1000, 1500, 2000]
+    o = np.array(o)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    j = np.array(j)/[500, 1000, 1500, 2000]
+    k = np.array(k)/[500, 1000, 1500, 2000]
+
+    print('F1', (m[-1] - m[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('Random', (o[-1] - o[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('None', (n[-1] - n[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, GRAPH_SIZEs, 'max_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
+    plt.legend()
+    plt.title('PCG NONStatic --- Max Infected')
+    #plt.xlabel('Ms')
+    plt.xlabel('|V|')
+    #plt.xticks(range(len(m)), Ms)
+    plt.xticks(range(len(m)), GRAPH_SIZEs)
+    plt.ylabel('Max Infected/|V|')
+    plt.show()
+
 
     #################################
     ## Total Infected ##
@@ -708,6 +819,26 @@ def do_grow():
     plt.plot(o, label='Random')
     plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
 
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
     plt.legend()
     plt.title('PCG NONStatic --- Total Infected')
     #plt.xlabel('Ms')
@@ -715,6 +846,58 @@ def do_grow():
     #plt.xticks(range(len(m)), Ms)
     plt.xticks(range(len(m)), GRAPH_SIZEs)
     plt.ylabel('Total Infected')
+    plt.show()
+
+    # PCG NON Static
+    m, i = break_function('mitigation_all_F1', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'total_infected')
+    n, j = break_function('mitigation_none', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    o, k = break_function('mitigation_random', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    n = np.array(n)/[500, 1000, 1500, 2000]
+    o = np.array(o)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    j = np.array(j)/[500, 1000, 1500, 2000]
+    k = np.array(k)/[500, 1000, 1500, 2000]
+
+    print('F1', (m[-1] - m[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('Random', (o[-1] - o[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('None', (n[-1] - n[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, GRAPH_SIZEs, 'total_infected')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
+    plt.legend()
+    plt.title('PCG NONStatic --- Total Infected')
+    #plt.xlabel('Ms')
+    plt.xlabel('|V|')
+    #plt.xticks(range(len(m)), Ms)
+    plt.xticks(range(len(m)), GRAPH_SIZEs)
+    plt.ylabel('Total Infected/|V|')
     plt.show()
 
     ################
@@ -828,6 +1011,26 @@ def do_grow():
     plt.plot(o, label='Random')
     plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
 
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
     plt.legend()
     plt.title('PCG NONStatic --- Mitigation Used')
     #plt.xlabel('M')
@@ -835,6 +1038,58 @@ def do_grow():
     #plt.xticks(range(len(m)), Ms)
     plt.xticks(range(len(m)), GRAPH_SIZEs)
     plt.ylabel('Mitigation Used')
+    plt.show()
+
+    # PCG NON Static
+    m, i = break_function('mitigation_all_F1', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    #n, j = break_function('../function_tests_break/mitigation_none', 'BA', True, Ms, 'total_infected')
+    n, j = break_function('mitigation_none', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    o, k = break_function('mitigation_random', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    n = np.array(n)/[500, 1000, 1500, 2000]
+    o = np.array(o)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    j = np.array(j)/[500, 1000, 1500, 2000]
+    k = np.array(k)/[500, 1000, 1500, 2000]
+
+    print('F1', (m[-1] - m[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('Random', (o[-1] - o[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+    print('None', (n[-1] - n[0])/(GRAPH_SIZEs[-1]-GRAPH_SIZEs[0]))
+
+    plt.plot(m, label='F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    plt.plot(n, label='None')
+    plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
+    plt.plot(o, label='Random')
+    plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, GRAPH_SIZEs, 'mitigation')
+    m = np.array(m)/[500, 1000, 1500, 2000]
+    i = np.array(i)/[500, 1000, 1500, 2000]
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
+    plt.legend()
+    plt.title('PCG NONStatic --- Mitigation Used')
+    #plt.xlabel('Ms')
+    plt.xlabel('|V|')
+    #plt.xticks(range(len(m)), Ms)
+    plt.xticks(range(len(m)), GRAPH_SIZEs)
+    plt.ylabel('Mitigation Used/|V|')
     plt.show()
 
 
@@ -934,6 +1189,27 @@ def do_break():
     plt.fill_between(range(len(n)), (n-j), (n+j), alpha=0.1)
     plt.plot(o, label='Random')
     plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
+
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, N_EDGESs, 'max_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, N_EDGESs, 'max_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, N_EDGESs, 'max_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
 
     plt.legend()
     plt.title('PCG NONStatic --- Max Infected')
@@ -1039,6 +1315,26 @@ def do_break():
     plt.plot(o, label='Random')
     plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
 
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, N_EDGESs, 'total_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, N_EDGESs, 'total_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, N_EDGESs, 'total_infected')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
     plt.legend()
     plt.title('PCG NONStatic --- Total Infected')
     plt.xlabel('N Edges')
@@ -1143,6 +1439,26 @@ def do_break():
     plt.plot(o, label='Random')
     plt.fill_between(range(len(o)), (o-k), (o+k), alpha=0.1)
 
+    # PCG new stuff
+    m, i = break_function('mitigation_PCG_F1', 'PCG', True, N_EDGESs, 'mitigation')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F1')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F2', 'PCG', True, N_EDGESs, 'mitigation')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F2')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+
+    m, i = break_function('mitigation_PCG_F3', 'PCG', True, N_EDGESs, 'mitigation')
+    m = np.array(m)
+    i = np.array(i)
+    plt.plot(m, label='PCG-F3')
+    plt.fill_between(range(len(m)), (m-i), (m+i), alpha=0.1) 
+    # End PCG New Stuff
+
     plt.legend()
     plt.title('PCG NONStatic --- Mitigation Used')
     plt.xlabel('N Edges')
@@ -1151,6 +1467,16 @@ def do_break():
     plt.show()
 
 # Load Results
+
+# Use for simple
+RESULTS_DIRECTORY = "./function_tests/"
+# Use for the use all/secondary strategy
+#RESULTS_DIRECTORY = "./function_tests_use_all/"
+#RESULTS_DIRECTORY = "./function_tests_break/"
+#RESULTS_DIRECTORY = "./function_tests_use_all_break/"
+#RESULTS_DIRECTORY = "./function_tests_grow/"
+#RESULTS_DIRECTORY = "./function_tests_use_all_grow/"
+
 
 model = snetwork.setup_network(0,0,0,0, size=500, edge_p=0.04)
 
@@ -1183,7 +1509,7 @@ GRAPH_SIZEs = [500, 1000, 1500, 2000]
 #do_grow()
 
 
-#print(generate_summary_statistic_table(FUNCTIONS_NONSTATIC_PCG, model, measure_keys))
+print(generate_summary_statistic_table(FUNCTIONS_NONSTATIC_PCG, model, measure_keys))
 #print()
 
 #print(generate_summary_statistic_table(FUNCTIONS_DYNAMIC, model, measure_keys))
