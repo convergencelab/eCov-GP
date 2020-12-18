@@ -115,7 +115,7 @@ language = gp.PrimitiveSetTyped("MAIN",
                                  #float,     # Average distance between all susceptible and exposed
                                  #float,     # Average distance between all infected
                                  #float,     # Average distance between all removed 
-                                 float,      # Minimal Vertex Cover 
+                                 float,      # Page Rank
                                  float,      # Clustering Coef
                                  #float,     # Iteration number
                                 ],
@@ -167,6 +167,7 @@ language.addPrimitive(operator.lt, [float, float], bool)
 language.addPrimitive(operator.gt, [float, float], bool)
 #language.addPrimitive(operator.ge, [float, float], bool)
 language.addPrimitive(if_then_else, [bool, bool, bool], bool)
+language.addPrimitive(if_then_else, [bool, float, float], float)
 
 # Constants
 language.addEphemeralConstant("rand_float_0-100", lambda: random.random()*1000, float)
