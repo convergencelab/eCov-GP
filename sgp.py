@@ -75,11 +75,11 @@ def setup_gp(language, eval_function, **kwargs):
     toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=language)
 
     ## Bloat rules 
-    toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
-    toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=5))
+    toolbox.decorate("mate", gp.staticLimit(key=operator.attrgetter("height"), max_value=4))
+    toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max_value=4))
 
-    toolbox.decorate("mate", gp.staticLimit(key=len, max_value=64))
-    toolbox.decorate("mutate", gp.staticLimit(key=len, max_value=64))
+    toolbox.decorate("mate", gp.staticLimit(key=len, max_value=32))
+    toolbox.decorate("mutate", gp.staticLimit(key=len, max_value=32))
 
     # Statistics Bookkeeeping
     stats_fit = tools.Statistics(lambda ind: ind.fitness.values)

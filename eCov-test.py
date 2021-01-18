@@ -100,7 +100,8 @@ N = 100
 #functions = [strategies.mitigation_none, strategies.mitigation_random, strategies.mitigation_traveler, strategies.mitigation_degree5, strategies.mitigation_degree6, strategies.mitigation_degree7, strategies.mitigation_degree8, strategies.mitigation_degree9, strategies.mitigation_degree10, strategies.mitigation_all_F1]
 #functions = [strategies.mitigation_none]
 #functions = [strategies.mitigation_all_F1]
-functions = [strategies.mitigation_PCG_F10, strategies.mitigation_PCG_F11, strategies.mitigation_PCG_F12, strategies.mitigation_PCG_F99]
+#functions = [strategies.mitigation_PCG_F10, strategies.mitigation_PCG_F11, strategies.mitigation_PCG_F12, strategies.mitigation_PCG_F99]
+functions = [strategies.mitigation_PCG_UA1, strategies.mitigation_PCG_UA2, strategies.mitigation_PCG_UA3]
 
 ###########
 

@@ -195,6 +195,14 @@ FUNCTIONS_STATIC_PCG = [
             'mitigation_PCG_F11_PCG_False',
             'mitigation_PCG_F12_PCG_False',
             'mitigation_PCG_F99_PCG_False',
+            'mitigation_PCG_F101_PCG_False',
+            'mitigation_PCG_F102_PCG_False',
+            'mitigation_PCG_F103_PCG_False',
+            'mitigation_PCG_F104_PCG_False',
+            'mitigation_PCG_F105_PCG_False',
+            'mitigation_PCG_UA1_PCG_False',
+            'mitigation_PCG_UA2_PCG_False',
+            'mitigation_PCG_UA3_PCG_False',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -222,6 +230,14 @@ FUNCTIONS_NONSTATIC_PCG = [
             'mitigation_PCG_F11_PCG_True',
             'mitigation_PCG_F12_PCG_True',
             'mitigation_PCG_F99_PCG_True',
+            'mitigation_PCG_F101_PCG_True',
+            'mitigation_PCG_F102_PCG_True',
+            'mitigation_PCG_F103_PCG_True',
+            'mitigation_PCG_F104_PCG_True',
+            'mitigation_PCG_F105_PCG_True',
+            'mitigation_PCG_UA1_PCG_True',
+            'mitigation_PCG_UA2_PCG_True',
+            'mitigation_PCG_UA3_PCG_True',
             ]       # CHANGE ME FOR SWITCHING OUT FUNCTIONS
 
 
@@ -1469,9 +1485,9 @@ def do_break():
 # Load Results
 
 # Use for simple
-RESULTS_DIRECTORY = "./function_tests/"
+#RESULTS_DIRECTORY = "./function_tests/"
 # Use for the use all/secondary strategy
-#RESULTS_DIRECTORY = "./function_tests_use_all/"
+RESULTS_DIRECTORY = "./function_tests_use_all/"
 #RESULTS_DIRECTORY = "./function_tests_break/"
 #RESULTS_DIRECTORY = "./function_tests_use_all_break/"
 #RESULTS_DIRECTORY = "./function_tests_grow/"

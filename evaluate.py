@@ -190,6 +190,7 @@ def evaluate_individual(f, m, traveler_set, mvc_set=None, avg_degree=0, avg_dist
                                         cluster_coefficient,
                                         #i,
                                         )
+
                     if do_we_mitigate:
                         if node_status == STATUS_SUSCEPTIBLE:
                             cur_num_mitigated = mitigate_self(m, s)
@@ -256,6 +257,7 @@ def evaluate_individual(f, m, traveler_set, mvc_set=None, avg_degree=0, avg_dist
                                             #s_dist_inf,
                                             #i,
                                             )
+
                         if do_we_mitigate:
                             if node_status == STATUS_SUSCEPTIBLE:
                                 cur_num_mitigated = mitigate_self(m, s)
