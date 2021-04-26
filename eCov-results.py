@@ -109,65 +109,7 @@ import snetwork
 RESULTS_DIRECTORY = "./output/"
 SUB_DIRECTORY = "January-14-CC_USE_ALL/"
 
-# This is the CC results 
-# I believe there were two diff runs here, but I do not know which was what and what I did different...
-#RESULTS_NAME = "12-19-2020_14-15-56.pkl" # 792 [ 134.  2689.5] 968[ 127. 2774.]
-#RESULTS_NAME = "12-19-2020_14-44-34.pkl" # 376 [ 133. 2691.] 
-#RESULTS_NAME = "12-19-2020_15-24-34.pkl" # crap
-#RESULTS_NAME = "12-19-2020_15-33-40.pkl" # 659 [ 134. 2706.]
-#RESULTS_NAME = "12-19-2020_17-18-23.pkl" # 57 [ 131.  2678.5]
 
-#RESULTS_NAME = "12-19-2020_17-33-30.pkl" # crap
-#RESULTS_NAME = "12-19-2020_17-51-47.pkl" # 705 [ 127. 2704.] 
-#RESULTS_NAME = "12-19-2020_18-13-16.pkl" # 602 [ 128.5 2771.5]
-#RESULTS_NAME = "12-19-2020_18-21-29.pkl" # 496 [ 132. 2602.] 434 [ 133. 2607.] 708 [ 129. 2677.] 
-#RESULTS_NAME = "12-19-2020_18-38-20.pkl" # crap
-
-# 2nd batch
-#RESULTS_NAME = "12-20-2020_11-47-01.pkl" # 631 [ 131. 2580.] 	768 [ 126.5 2660. ] (all results are good)
-#RESULTS_NAME = "12-20-2020_12-47-41.pkl" # 616 [ 130.  2666.5]
-#RESULTS_NAME = "12-20-2020_13-39-31.pkl" # 158 [ 129. 2570.]
-#RESULTS_NAME = "12-20-2020_14-32-58.pkl" # 957 [ 125. 2538.]
-#RESULTS_NAME = "12-20-2020_14-39-48.pkl" # 212 [ 130.5 2614. ] 527 [ 129.5 2617. ]
-
-#RESULTS_NAME = "12-20-2020_15-17-51.pkl" # 356 [ 126. 2594.]
-#RESULTS_NAME = "12-20-2020_16-07-22.pkl" # meh
-#RESULTS_NAME = "12-20-2020_16-32-10.pkl" # 13 [ 128.5 2445.5] *************************
-#RESULTS_NAME = "12-20-2020_16-53-56.pkl" # meh
-#RESULTS_NAME = "12-20-2020_17-26-30.pkl" # 75 [ 123.  2785.5]
-
-
-# This was Late DEC Old Desktop
-#RESULTS_NAME = "12-20-2020_18-52-14.pkl" # (484) 125, 2877
-#RESULTS_NAME = "12-20-2020_19-39-56.pkl" # (336) 133.5, 2711.5 (617) 127, 2775 (887)125.5, 2871.
-#RESULTS_NAME = "12-20-2020_19-53-42.pkl" # (601) 129, 2787
-#RESULTS_NAME = "12-20-2020_19-57-25.pkl" # (36) 129, 2886 (478) 123.5, 2688 (669) 130, 2734
-#RESULTS_NAME = "12-20-2020_20-02-41.pkl" # 145 [ 128.5 2745. ]
-#RESULTS_NAME = "12-20-2020_20-06-19.pkl" # crap
-#RESULTS_NAME = "12-20-2020_20-21-53.pkl" # crap
-#RESULTS_NAME = "12-20-2020_20-45-42.pkl" # crap
-
-
-#RESULTS_NAME = "12-08-2020_10-36-23.pkl" # 105 2471.5
-#RESULTS_NAME = "12-08-2020_13-20-06.pkl" # 109.5 2680
-#RESULTS_NAME = "12-08-2020_14-40-36.pkl" # 114.5 2542.5
-#RESULTS_NAME = "12-08-2020_15-36-04.pkl" # 112.5 2654
-#RESULTS_NAME = "12-08-2020_15-40-26.pkl" # 111 2532.5
-#RESULTS_NAME = "12-08-2020_15-48-28.pkl" # 110.5 2528
-#RESULTS_NAME = "12-08-2020_18-17-53.pkl" # 107.5 2584.5
-#RESULTS_NAME = "12-08-2020_20-28-39.pkl" # 110 2600.5
-
-
-
-#SUB_DIRECTORY = "December-Generation_500"
-#RESULTS_NAME = "12-02-2020_23-55-14.pkl" # good
-#RESULTS_NAME = "12-03-2020_00-29-14.pkl" # ok
-#RESULTS_NAME = "12-03-2020_01-18-07.pkl" # meh
-#RESULTS_NAME = "12-03-2020_01-18-21.pkl" # ok
-#RESULTS_NAME = "12-03-2020_01-27-56.pkl" # meh
-#RESULTS_NAME = "12-03-2020_01-28-17.pkl" # ok
-#RESULTS_NAME = "12-03-2020_01-31-23.pkl" # good
-#RESULTS_NAME = "12-03-2020_01-42-29.pkl" # less than good, better than meh
 
 
 #########################################################
@@ -194,7 +136,7 @@ def print_summary(results):
     
     for i in np.argsort(results[:,0]):
         if results[i, 0] < 120 and results[i, -1] < 2600:
-            print('\t\t\t\t\t\t', end='')
+            print('\t\t\t\t\t\t\t\t', end='')
             print(i, end='')
             print(results[i])
 
@@ -212,7 +154,7 @@ def print_summary(results):
 
     for i in np.argsort(results[:,-1]):
         if results[i, -1] < 2500:
-            print('\t\t\t\t\t\t', end='')
+            print('\t\t\t\t\t\t\t\t', end='')
             print(i, end=' ')
             print(results[i])
 

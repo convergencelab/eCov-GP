@@ -2,7 +2,7 @@
 Author:     James Hughes
 Date:       May 19, 2020
 
-Version:    0.16
+Version:    0.17
 
 
 Change Log:
@@ -70,6 +70,9 @@ Change Log:
             * Added multiply
             * Added divide
             * let trees go a little deeper
+            
+    0.17 (April 26, 2021):
+        - Small change to enable dynamic graphs
 
 End Change Log
 
@@ -159,8 +162,8 @@ import snetwork
 DATA_DIRECTORY = "./"
 RESULTS_DIRECTORY = "./output/"
 DATA_NAME = ""
-POPULATION = 1000
-GENERATIONS = 500
+POPULATION = 50
+GENERATIONS = 10
 CROSSOVER = 0.8
 MUTATION = 0.15
 
@@ -200,6 +203,12 @@ MEASURE_EVERY = 7
 MITIGATIONS_PER_MEASURE = 30
 ROLLOVER = False
 USE_ALL = False
+
+###############################################
+DYNAMIC = True
+ADD_p = 0.01
+REMOVE_p = 0.01
+
 ###########
 
 
@@ -255,7 +264,7 @@ cluster_coef = clustering_coefficient(model)
 # GP Setup #
 ############
 
-toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, mvc_set=minimal_vertex_cover, vert_avg_dist=vertex_average_distance, number_vertex_shortest=number_shortest_paths, Page_Rank=page_rank, Cluster_Coeff=cluster_coef, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL)
+toolbox, mstats, logbook = sgp.setup_gp(language, evaluate.evaluate_individual, m=model, traveler_set=travelers, mvc_set=minimal_vertex_cover, vert_avg_dist=vertex_average_distance, number_vertex_shortest=number_shortest_paths, Page_Rank=page_rank, Cluster_Coeff=cluster_coef, avg_degree=average_degree, short_dist=shortest_distances, avg_dist=average_distance, total_iterations=ITERATIONS, measure_every=MEASURE_EVERY, mitigations_per_measure=MITIGATIONS_PER_MEASURE, rollover=ROLLOVER, use_all=USE_ALL, use_dynamic=DYNAMIC, ADD_p=ADD_p, REMOVE_p=REMOVE_p)
 
 
 #######################

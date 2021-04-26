@@ -101,7 +101,7 @@ language = gp.PrimitiveSetTyped("MAIN",
                                  float,       # Number of neighbours infected
                                  #float,       # Number of neighbours removed
                                  bool,      # Is traveler
-                                 #bool,      # In Minimal Vertex Cover
+                                 bool,      # In Minimal Vertex Cover
                                  float,     # Average degree of Nodes in Graph
                                  float,     # Average shortest distance between nodes in Graph
                                  float,     # Average Shortest dist from single node to all others
@@ -109,14 +109,14 @@ language = gp.PrimitiveSetTyped("MAIN",
                                  #bool,      # Is mitigation available
                                  float,       # Total number of susceptible and exposed
                                  float,       # Total number of infected
-                                 #float,       # Total number of removed
+                                 float,       # Total number of removed
                                  float,         # Number of times a vertex is in a shortest path
                                  #float,     # Shortest distance from susexp node to an infected node
                                  #float,     # Average distance between all susceptible and exposed
                                  #float,     # Average distance between all infected
                                  #float,     # Average distance between all removed 
-                                 #float,      # Page Rank
-                                 #float,      # Clustering Coef
+                                 float,      # Page Rank
+                                 float,      # Clustering Coef
                                  #float,     # Iteration number
                                 ],
                                 bool,       # Do we vaccinate?
@@ -129,22 +129,22 @@ language.renameArguments(ARG2='NB_SUSEXP')
 language.renameArguments(ARG3='NB_INFECT')
 #language.renameArguments(ARG4='NB_REMOVE')
 language.renameArguments(ARG4='TRAVELER')
-#language.renameArguments(ARG5='MVC')
-language.renameArguments(ARG5='AVG_DEGREE')
-language.renameArguments(ARG6='AVG_DIST_ALL')
-language.renameArguments(ARG7='AVG_DIST_SGL')
+language.renameArguments(ARG5='MVC')
+language.renameArguments(ARG6='AVG_DEGREE')
+language.renameArguments(ARG7='AVG_DIST_ALL')
+language.renameArguments(ARG8='AVG_DIST_SGL')
 #language.renameArguments(ARG7='NUM_MITIGAT')
 #language.renameArguments(ARG7='MITIGATE')
-language.renameArguments(ARG8='NUM_SUSEXP')
-language.renameArguments(ARG9='NUM_INFECT')
-#language.renameArguments(ARG11='NUM_REMOVE')
-language.renameArguments(ARG10='NUM_SHORT')
+language.renameArguments(ARG9='NUM_SUSEXP')
+language.renameArguments(ARG10='NUM_INFECT')
+language.renameArguments(ARG11='NUM_REMOVE')
+language.renameArguments(ARG12='NUM_SHORT')
 #language.renameArguments(ARG11='SHORT_DIST')
 #language.renameArguments(ARG12='AVG_SUSEXP')
 #language.renameArguments(ARG13='AVG_INFECT')
 #language.renameArguments(ARG14='AVG_REMOVE')
-#language.renameArguments(ARG13='PR')
-#language.renameArguments(ARG14='CCOEF')
+language.renameArguments(ARG13='PR')
+language.renameArguments(ARG14='CCOEF')
 #language.renameArguments(ARG12='ITERATION')
 
 
